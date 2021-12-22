@@ -27,4 +27,5 @@ Credits to [pypresence](https://github.com/qwertyquerty/pypresence)
 <img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/inmenu.png?raw=true" width="250" title="browsing">
 <img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/listening.png?raw=true" width="250" title="watching">
 <img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/offline.png?raw=true" width="250" title="offline">
+<img src="https://github.com/manucabral/YouTubeMusicRPC/blob/main/assets/pause.png?raw=true" width="250" title="pause">
 </p>
