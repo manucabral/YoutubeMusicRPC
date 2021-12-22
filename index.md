@@ -3,7 +3,8 @@
 </p>
 
 <p align="center">
-   A Youtube Music Rich Presence client that show what you're listening.
+   A YouTube Music Rich Presence client that show what you're listening.
+   This app only works in a Browser.
 </p>
 
 # Supported browsers
@@ -13,9 +14,10 @@
 
 ## Usage
 1. Download the last version from [here](https://github.com/manucabral/YoutubeMusicRPC/releases)
-3. Extract and open `Youtube Music RPC.exe`
+3. Extract and open `YouTube Music RPC.exe`
 
-> Requires Discord running and "Display current activity" activated, if the rich presence doesn't work you can restart discord and try again.
+## Important
+Requires Discord running and `Display current activity` activated, if the rich presence doesn't work you can restart discord and try again. This app only works in a Browser!
 
 Credits to [pypresence](https://github.com/qwertyquerty/pypresence)
 
@@ -25,4 +27,5 @@ Credits to [pypresence](https://github.com/qwertyquerty/pypresence)
 <img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/inmenu.png?raw=true" width="250" title="browsing">
 <img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/listening.png?raw=true" width="250" title="watching">
 <img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/offline.png?raw=true" width="250" title="offline">
+<img src="https://github.com/manucabral/YouTubeMusicRPC/blob/main/assets/pause.png?raw=true" width="250" title="pause">
 </p>
