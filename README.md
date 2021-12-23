@@ -16,6 +16,9 @@
 1. Download the last version from [here](https://github.com/manucabral/YoutubeMusicRPC/releases)
 3. Extract and open `YouTube Music RPC.exe`
 
+## How does that work
+The program accesses the history of your browser and obtains the last website what you have visited, if that website is YouTube Music then it will create the status from the `URL` and the `title` of the website.
+
 ## Important
 Requires Discord running and `Display current activity` activated, if the rich presence doesn't work you can restart discord and try again. This app only works in a Browser!
 
