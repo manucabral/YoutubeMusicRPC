@@ -1,0 +1,76 @@
+# Yep, it's the magic utils file. It's not made to be pretty.
+
+import json
+import winreg as wr
+import subprocess as sp
+import urllib.request as req
+from .browsers import BROWSERS
+from .tab import Tab
+
+ENDPOINT = "http://127.0.0.1:9222/json"
+
+
+def request(url: str) -> bytes:
+    with req.urlopen(url) as response:
+        return response.read()
+
+
+def remote_debugging() -> bool:
+    try:
+        request(ENDPOINT)
+        return True
+    except Exception:
+        return False
+
+
+def find_browser(progid) -> dict:
+    for browser in BROWSERS:
+        if browser["progid"] == progid:
+            return browser
+    return None
+
+
+def get_default_browser() -> dict:
+    progid = wr.QueryValueEx(
+        wr.OpenKey(
+            wr.HKEY_CURRENT_USER,
+            r"Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice",
+        ),
+        "ProgId",
+    )[0]
+    if not progid:
+        raise Exception("Can't find default browser")
+    browser = find_browser(progid.split(".")[0])
+    if not browser:
+        raise Exception("Unsupported browser, sorry")
+    browser["path"] = (
+        wr.QueryValueEx(
+            wr.OpenKey(wr.HKEY_CLASSES_ROOT, progid + "\shell\open\command"), ""
+        )[0]
+        .split(" ")[0]
+        .replace('"', "")
+        .strip()
+    )
+    return browser
+
+
+def get_browser_tabs(filter_url: str = "") -> list:
+    tabs = request(ENDPOINT).decode("utf-8")
+    tabs = json.loads(tabs)
+    tabs = [tab for tab in tabs if filter_url in tab["url"] and tab["type"] == "page"]
+    return tabs
+
+
+def run_browser(browser: dict) -> None:
+    sp.Popen([browser["path"], "--remote-debugging-port=9222"])
+
+
+def current_playing_tab(tabs: Tab) -> dict:
+    tabs = get_browser_tabs(filter_url="music.youtube.com")
+    if tabs:
+        for tab_data in tabs:
+            tab = Tab(**tab_data)
+            tab.update()
+            if tab.playing:
+                return tab
+    return None
