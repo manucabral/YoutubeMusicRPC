@@ -7,17 +7,19 @@
    This app only works in a Browser.
 </p>
 
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+
 # Supported browsers
 - Google Chrome
-- Microsoft Edge
 - Yandex Browser
 
 ## Usage
+> Last version deprecated, new version is still development.
 1. Download the last version from [here](https://github.com/manucabral/YoutubeMusicRPC/releases)
-3. Extract and open `YouTube Music RPC.exe`
+2. Extract and open `YouTube Music RPC.exe`
 
 ## How does that work
-The program accesses the history of your browser and obtains the last website what you have visited, if that website is YouTube Music then it will create the status from the `URL` and the `title` of the website.
+The program opens your browser with remote debugging and obtains all Youtube Music tabs then gets all information about that media throught MediaSession.
 
 ## Important
 Requires Discord running and `Display current activity` activated, if the rich presence doesn't work you can restart discord and try again. This app only works in a Browser!
@@ -25,7 +27,7 @@ Requires Discord running and `Display current activity` activated, if the rich p
 Credits to [pypresence](https://github.com/qwertyquerty/pypresence)
 
 ## Previews
-
+> Deprecated previews, new version is still development.
 <p align="center"> 
 <img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/inmenu.png?raw=true" width="250" title="browsing">
 <img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/listening.png?raw=true" width="250" title="watching">
