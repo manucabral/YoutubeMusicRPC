@@ -32,7 +32,7 @@ The program opens your browser with remote debugging enable and obtains all Yout
     - Try
         - Close all browser instances and run it again.
         - Restart discord and open it again.
-    - If the problem persist please create an issue and adjunt your __client.log__ file.
+    - If the problem persist please make an issue and adjunt your __client.log__ file.
      
 
 Credits to [pypresence](https://github.com/qwertyquerty/pypresence)
