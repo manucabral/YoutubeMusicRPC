@@ -3,7 +3,6 @@ from .client import Client
 
 
 class Tab:
-    
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
         self.connected = False
@@ -41,6 +40,7 @@ class Tab:
             )
         )
         if not self.metadata:
+            self.pause = False
             return
         self.playing = self.metadata[0] == "playing"
         self.pause = self.metadata[0] == "paused"

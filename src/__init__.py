@@ -28,5 +28,7 @@ from .app import App
 from .logger import Logger
 
 __all__ = ["App", "Logger"]
+__title__ = "Youtube Music RPC"
 __version__ = "0.3"
-
+__author__ = "Manuel Cabral"
+__license__ = "MIT"

@@ -1,4 +1,5 @@
 import time
+import sys
 from .presence import Presence
 from .logger import Logger
 from .tab import Tab
@@ -8,9 +9,21 @@ from .utils import remote_debugging, run_browser, get_default_browser, get_brows
 class App:
     """Core class of the application."""
 
-    __slots__ = ("__presence", "last_tab", "connected", "__browser")
+    __slots__ = (
+        "__presence",
+        "__browser",
+        "last_tab",
+        "connected",
+    )
 
-    def __init__(self, client_id: str = None):
+    def __init__(
+        self,
+        client_id: str = None,
+        version: str = None,
+        title: str = None,
+    ):
+        sys.stdout.write(f"\x1b]2;{title} v{version}\x07")
+        Logger.write(message=f"{title} v{version}", level="INFO", origin=self)
         Logger.write(message="initialized.", origin=self)
         self.__presence = Presence(client_id=client_id)
         self.last_tab = None
@@ -83,7 +96,10 @@ class App:
                 if self.last_tab == tab:
                     continue
                 self.last_tab = tab
-                print(self.last_tab.title, self.last_tab.artist, self.last_tab.album)
+                Logger.write(
+                    message=f"Playing {self.last_tab.title} by {self.last_tab.artist}",
+                    origin=self,
+                )
                 state = self.last_tab.artist
                 if self.last_tab.pause:
                     state += " (Paused)"
@@ -91,10 +107,21 @@ class App:
                     details=self.last_tab.title,
                     state=state,
                     large_image="logo",
-                    buttons=[{"label": "Play", "url": self.last_tab.url}],
+                    buttons=[
+                        {"label": "Play", "url": self.last_tab.url},
+                        {
+                            "label": "Download App",
+                            "url": "https://manucabral.github.io/YoutubeMusicRPC/",
+                        },
+                    ],
                     start=time.time(),
                 )
                 time.sleep(15)
         except Exception as exc:
-            raise exc
             self.__handle_exception(exc)
+            if exc.__class__.__name__ == "URLError":
+                Logger.write(
+                    message="Please close all browser instances and try again.",
+                    level="WARN",
+                    origin=self,
+                )
