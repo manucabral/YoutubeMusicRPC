@@ -1,5 +1,5 @@
 import time
-import sys
+import os
 from .presence import Presence
 from .logger import Logger
 from .tab import Tab
@@ -22,7 +22,7 @@ class App:
         version: str = None,
         title: str = None,
     ):
-        sys.stdout.write(f"\x1b]2;{title} v{version}\x07")
+        os.system("title " + title + " v" + version)
         Logger.write(message=f"{title} v{version}", level="INFO", origin=self)
         Logger.write(message="initialized.", origin=self)
         self.__presence = Presence(client_id=client_id)
