@@ -1,6 +1,8 @@
 <p align="center">
 <img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/logo.png?raw=true" width="250" title="example">
+<img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/app.png?raw=true" title="app">
 </p>
+
 
 <p align="center">
    A YouTube Music Rich Presence client that show what you're listening client made with ❤️.
