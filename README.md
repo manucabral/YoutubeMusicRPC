@@ -48,6 +48,6 @@ All contributions, bug reports, bug fixes, enhancements, and ideas are welcome. 
 <p align="center"> 
 <img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/listening.png?raw=true" width="250" title="listening">
 <img src="https://github.com/manucabral/YouTubeMusicRPC/blob/main/assets/pause.png?raw=true" width="250" title="pause">
-</p>
 <img src="https://github.com/manucabral/YouTubeMusicRPC/blob/main/assets/browser.png?raw=true" width="250" title="browser">
+</p>
 </p>
