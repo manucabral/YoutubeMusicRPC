@@ -101,13 +101,14 @@ class App:
                 if self.last_tab == tab:
                     continue
                 self.last_tab = tab
+                state = self.last_tab.artist if self.last_tab.artist else "Unknown"
+                details = self.last_tab.title if self.last_tab.title else "Unknown"
                 Logger.write(
-                    message=f"Playing {self.last_tab.title} by {self.last_tab.artist}",
+                    message=f"Playing {state} by {details}",
                     origin=self,
                 )
-                state = self.last_tab.artist
                 self.__presence.update(
-                    details=self.last_tab.title,
+                    details=details,
                     state=state,
                     large_image="logo",
                     large_text=f"{self.title} v{self.version}",
