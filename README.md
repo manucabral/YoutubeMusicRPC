@@ -6,7 +6,6 @@
 
 <p align="center">
    A YouTube Music Rich Presence client that show what you're listening client made with ❤️.
-   This app only works in a browser.
 </p>
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -17,6 +16,7 @@ The lastest release is available [here](https://github.com/manucabral/YoutubeMus
 ## 🗒️ Supported browsers
 - Google Chrome
 - Yandex Browser
+- Microsoft Edge
 > Still in dev for more browsers.
 
 
@@ -33,6 +33,8 @@ The program opens your browser with remote debugging enable and obtains all Yout
 - The app crashes on start
     - Try
         - Close all browser instances and run it again.
+        - If you've Youtube Music Desktop Application close it too.
+          - I recommended to close instances from the task manager.
         - Restart discord and open it again.
     - If the problem persist please make an issue and adjunt your __client.log__ file.
      
@@ -46,4 +48,6 @@ All contributions, bug reports, bug fixes, enhancements, and ideas are welcome. 
 <p align="center"> 
 <img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/listening.png?raw=true" width="250" title="listening">
 <img src="https://github.com/manucabral/YouTubeMusicRPC/blob/main/assets/pause.png?raw=true" width="250" title="pause">
+</p>
+<img src="https://github.com/manucabral/YouTubeMusicRPC/blob/main/assets/browser.png?raw=true" width="250" title="browser">
 </p>
