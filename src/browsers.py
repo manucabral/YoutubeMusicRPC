@@ -13,4 +13,11 @@ BROWSERS = [
         "chromium": True,
         "progid": "YandexHTML",
     },
+    {
+        "name": "Edge",
+        "fullname": "Microsoft Edge",
+        "process": {"win32": "msedge.exe", "linux": "sure??"},
+        "progid": "EdgeHTML",
+        "chromium": True,
+    },
 ]
