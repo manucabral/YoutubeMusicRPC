@@ -1,5 +1,6 @@
 # Yep, it's the magic utils file. It's not made to be pretty.
 
+import re
 import json
 import winreg as wr
 import subprocess as sp
@@ -25,7 +26,7 @@ def remote_debugging() -> bool:
 
 def find_browser(progid) -> dict:
     for browser in BROWSERS:
-        if browser["progid"] == progid:
+        if re.search(browser["name"], progid, re.IGNORECASE):
             return browser
     return None
 
@@ -43,14 +44,9 @@ def get_default_browser() -> dict:
     browser = find_browser(progid.split(".")[0])
     if not browser:
         raise Exception("Unsupported browser, sorry")
-    browser["path"] = (
-        wr.QueryValueEx(
-            wr.OpenKey(wr.HKEY_CLASSES_ROOT, progid + "\shell\open\command"), ""
-        )[0]
-        .split(" ")[0]
-        .replace('"', "")
-        .strip()
-    )
+    browser["path"] = wr.QueryValueEx(
+        wr.OpenKey(wr.HKEY_CLASSES_ROOT, progid + "\shell\open\command"), ""
+    )[0].split('"')[1]
     return browser
 
 
