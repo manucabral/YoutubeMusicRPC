@@ -14,6 +14,8 @@ class App:
         "__browser",
         "last_tab",
         "connected",
+        "version",
+        "title",
     )
 
     def __init__(
@@ -26,6 +28,8 @@ class App:
         Logger.write(message=f"{title} v{version}", level="INFO", origin=self)
         Logger.write(message="initialized.", origin=self)
         self.__presence = Presence(client_id=client_id)
+        self.version = version
+        self.title = title
         self.last_tab = None
         self.connected = False
         self.__browser = None
@@ -43,6 +47,7 @@ class App:
             if not self.__browser["chromium"]:
                 raise Exception("Unsupported browser, sorry.")
             self.connected = True
+            Logger.write(message=f"{self.__browser['fullname']} detected.", origin=self)
             Logger.write(message="synced and connected.", origin=self)
         except Exception as exc:
             self.__handle_exception(exc)
@@ -101,12 +106,13 @@ class App:
                     origin=self,
                 )
                 state = self.last_tab.artist
-                if self.last_tab.pause:
-                    state += " (Paused)"
                 self.__presence.update(
                     details=self.last_tab.title,
                     state=state,
                     large_image="logo",
+                    large_text=f"{self.title} v{self.version}",
+                    small_image="pause" if self.last_tab.pause else "play",
+                    small_text=self.__browser["fullname"],
                     buttons=[
                         {"label": "Play", "url": self.last_tab.url},
                         {
@@ -121,7 +127,7 @@ class App:
             self.__handle_exception(exc)
             if exc.__class__.__name__ == "URLError":
                 Logger.write(
-                    message="Please close all browser instances and try again.",
+                    message="Please close all browser instances and try again. Also, close Youtube Music Desktop App if you are using it.",
                     level="WARN",
                     origin=self,
                 )
