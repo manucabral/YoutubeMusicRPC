@@ -1,11 +1,13 @@
 <p align="center">
 <img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/logo.png?raw=true" width="250" title="example">
 <img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/app.png?raw=true" title="app">
+<img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/listening.png?raw=true" width="250" title="listening">
+<img src="https://github.com/manucabral/YouTubeMusicRPC/blob/main/assets/pause.png?raw=true" width="250" title="pause">
+<img src="https://github.com/manucabral/YouTubeMusicRPC/blob/main/assets/browser.png?raw=true" width="250" title="browser">
 </p>
 
-
 <p align="center">
-   A YouTube Music Rich Presence client that show what you're listening client made with ❤️.
+   A YouTube Music Rich Presence app client that show what you're listening client made with ❤️.
 </p>
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
@@ -17,11 +19,12 @@ The lastest release is available [here](https://github.com/manucabral/YoutubeMus
 - Google Chrome
 - Yandex Browser
 - Microsoft Edge
-> Still in dev for more browsers.
+
+If you want a support for another browser, please make an [issue](https://github.com/manucabral/YoutubeMusicRPC/issues).
 
 
-## ❓ How does that work
-The program opens your browser with remote debugging enable and obtains all Youtube Music tabs then gets all information about that media throught [MediaSession](https://developer.mozilla.org/en-US/docs/Web/API/MediaSession).
+## :grey_question: How does that work
+The application opens your browser with remote debugging enable (Chrome Dev Tools) to access all Youtube Music tabs, once this is done the app executes a script to obtain all the data throught [MediaSession](https://developer.mozilla.org/en-US/docs/Web/API/MediaSession) and finally create a Rich Presence for Discord.
 
 ## 🔨 Troubleshooting
 - My rich presence client is not displaying?
@@ -42,12 +45,5 @@ The program opens your browser with remote debugging enable and obtains all Yout
 Credits to [pypresence](https://github.com/qwertyquerty/pypresence)
 
 ## ✨ Contributing
-All contributions, bug reports, bug fixes, enhancements, and ideas are welcome. Just make a pull request or a issue!
+All contributions, bug reports, fixes, enhancements, and ideas are welcome. Just make a pull request or a issue!
 
-## Previews
-<p align="center"> 
-<img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/listening.png?raw=true" width="250" title="listening">
-<img src="https://github.com/manucabral/YouTubeMusicRPC/blob/main/assets/pause.png?raw=true" width="250" title="pause">
-<img src="https://github.com/manucabral/YouTubeMusicRPC/blob/main/assets/browser.png?raw=true" width="250" title="browser">
-</p>
-</p>
