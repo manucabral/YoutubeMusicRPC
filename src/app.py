@@ -5,6 +5,8 @@ from .logger import Logger
 from .tab import Tab
 from .utils import remote_debugging, run_browser, get_default_browser, get_browser_tabs
 
+DISCORD_STATUS_LIMIT = 15
+
 
 class App:
     """Core class of the application."""
@@ -26,7 +28,7 @@ class App:
     ):
         os.system("title " + title + " v" + version)
         Logger.write(message=f"{title} v{version}", level="INFO", origin=self)
-        Logger.write(message="initialized.", origin=self)
+        Logger.write(message="initialized, to stop, press CTRL+C.", origin=self)
         self.__presence = Presence(client_id=client_id)
         self.version = version
         self.title = title
@@ -90,15 +92,20 @@ class App:
                 )
                 Logger.write(message="Starting browser remote debugging..", origin=self)
                 run_browser(self.__browser)
+            Logger.write(message="Starting presence loop..", origin=self)
+            time.sleep(5)
             while self.connected:
                 tabs = self.update_tabs()
                 tab = [tab for tab in tabs if tab.playing] or [
                     tab for tab in tabs if tab.pause
                 ]
                 if not tab:
+                    Logger.write(message="No tab found.", origin=self)
+                    time.sleep(DISCORD_STATUS_LIMIT)
                     continue
                 tab = tab[0]
                 if self.last_tab == tab:
+                    time.sleep(DISCORD_STATUS_LIMIT)
                     continue
                 self.last_tab = tab
                 state = self.last_tab.artist if self.last_tab.artist else "Unknown"
@@ -123,7 +130,7 @@ class App:
                     ],
                     start=time.time(),
                 )
-                time.sleep(15)
+                time.sleep(DISCORD_STATUS_LIMIT)
         except Exception as exc:
             self.__handle_exception(exc)
             if exc.__class__.__name__ == "URLError":

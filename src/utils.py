@@ -58,7 +58,9 @@ def get_browser_tabs(filter_url: str = "") -> list:
 
 
 def run_browser(browser: dict) -> None:
-    sp.Popen([browser["path"], "--remote-debugging-port=9222", "--remote-allow-origins=*"])
+    sp.Popen(
+        [browser["path"], "--remote-debugging-port=9222", "--remote-allow-origins=*"]
+    )
 
 
 def current_playing_tab(tabs: Tab) -> dict:
