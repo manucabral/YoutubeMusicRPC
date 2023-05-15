@@ -9,6 +9,9 @@
 <p align="center">
    A YouTube Music Rich Presence app client that show what you're listening client made with ❤️.
 </p>
+<p align="center">
+   Note: This is not an official app made by YouTube Music or Google.
+</p>
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
