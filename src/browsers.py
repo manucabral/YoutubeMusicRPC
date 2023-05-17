@@ -1,3 +1,5 @@
+# source: https://github.com/manucabral/pybrinf/blob/main/pybrinf/browsers.py
+
 BROWSERS = [
     {
         "name": "Chrome",
