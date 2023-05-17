@@ -23,7 +23,7 @@ The lastest release is available [here](https://github.com/manucabral/YoutubeMus
 If you want support for another browser, please create an [issue](https://github.com/manucabral/YoutubeMusicRPC/issues).
 
 ## 📝Notes
-- Crrently only compatible with Microsoft Windows systems.
+- Currently only compatible with Microsoft Windows systems.
 
 ## :grey_question: How does that work
 The application opens your browser with remote debugging enabled (Chrome Dev Tools) to access all YouTube Music tabs. Once this is done, the app executes a script to obtain all the data through [MediaSession](https://developer.mozilla.org/en-US/docs/Web/API/MediaSession) and finally creates a Rich Presence for Discord.
@@ -44,9 +44,9 @@ The application opens your browser with remote debugging enabled (Chrome Dev Too
 
      
 ## 🙌 Credits
+- [MediaSession](https://developer.mozilla.org/en-US/docs/Web/API/MediaSession) for accessing media metadata.
 - [pypresence](https://github.com/qwertyquerty/pypresence) for Discord Rich Presence integration.
 - [pybrinf](https://github.com/manucabral/pybrinf) for browser information.
-- [MediaSession](https://developer.mozilla.org/en-US/docs/Web/API/MediaSession) for accessing media metadata.
 
 ## 📜 License & Disclaimer
 This application is not an official product of YouTube or Google and is licensed under the MIT License.
