@@ -19,8 +19,10 @@ class Presence:
             self.__rpc = pp.Presence(self.__client_id)
             self.__rpc.connect()
             Logger.write(message="connected.", origin=self)
+            return True
         except Exception as exc:
             self.__handle_exception(exc)
+            return False
 
     def connected(self) -> bool:
         return self.__rpc.connected

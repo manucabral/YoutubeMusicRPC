@@ -42,7 +42,9 @@ class App:
     def sync(self) -> None:
         Logger.write(message="syncing..", origin=self)
         try:
-            self.__presence.connect()
+            status = self.__presence.connect()
+            if not status:
+                raise Exception("Can't connect to Discord.")
             self.__browser = get_default_browser()
             if not self.__browser:
                 raise Exception("Can't find default browser.")
