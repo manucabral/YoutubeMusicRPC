@@ -47,9 +47,9 @@ class App:
                 raise Exception("Can't connect to Discord.")
             self.__browser = get_default_browser()
             if not self.__browser:
-                raise Exception("Can't find default browser.")
+                raise Exception("Can't find default browser in your system.")
             if not self.__browser["chromium"]:
-                raise Exception("Unsupported browser, sorry.")
+                raise Exception("You have an unsupported browser.")
             self.connected = True
             Logger.write(message=f"{self.__browser['fullname']} detected.", origin=self)
             Logger.write(message="synced and connected.", origin=self)
