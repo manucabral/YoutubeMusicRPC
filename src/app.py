@@ -112,6 +112,7 @@ class App:
                 self.last_tab = tab
                 state = self.last_tab.artist if self.last_tab.artist else "Unknown"
                 details = self.last_tab.title if self.last_tab.title else "Unknown"
+                artwork = self.last_tab.artwork if self.last_tab.artwork else "logo"
                 Logger.write(
                     message=f"Playing {state} by {details}",
                     origin=self,
@@ -119,12 +120,12 @@ class App:
                 self.__presence.update(
                     details=details,
                     state=state,
-                    large_image="logo",
+                    large_image=artwork,
                     large_text=f"{self.title} v{self.version}",
                     small_image="pause" if self.last_tab.pause else "play",
                     small_text=self.__browser["fullname"],
                     buttons=[
-                        {"label": "Play", "url": self.last_tab.url},
+                        {"label": "Listen to Youtube Music", "url": self.last_tab.url},
                         {
                             "label": "Download App",
                             "url": "https://manucabral.github.io/YoutubeMusicRPC/",

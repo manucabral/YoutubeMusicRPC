@@ -35,6 +35,7 @@ class Tab:
                         navigator.mediaSession.metadata.title, \
                         navigator.mediaSession.metadata.artist, \
                         navigator.mediaSession.metadata.album, \
+                        navigator.mediaSession.metadata.artwork[0].src, \
                     ].join([separator = '#'])"
                 },
             )
@@ -47,6 +48,7 @@ class Tab:
         self.title = self.metadata[1]
         self.artist = self.metadata[2]
         self.album = self.metadata[3]
+        self.artwork = self.metadata[4]
 
     def close(self):
         if self.connected:
