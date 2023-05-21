@@ -106,9 +106,6 @@ class App:
                     time.sleep(DISCORD_STATUS_LIMIT)
                     continue
                 tab = tab[0]
-                if self.last_tab == tab:
-                    time.sleep(DISCORD_STATUS_LIMIT)
-                    continue
                 self.last_tab = tab
                 Logger.write(
                     message=f"Playing {self.last_tab.title} by {self.last_tab.artist}",
