@@ -110,17 +110,14 @@ class App:
                     time.sleep(DISCORD_STATUS_LIMIT)
                     continue
                 self.last_tab = tab
-                state = self.last_tab.artist if self.last_tab.artist else "Unknown"
-                details = self.last_tab.title if self.last_tab.title else "Unknown"
-                artwork = self.last_tab.artwork if self.last_tab.artwork else "logo"
                 Logger.write(
-                    message=f"Playing {state} by {details}",
+                    message=f"Playing {self.last_tab.title} by {self.last_tab.artist}",
                     origin=self,
                 )
                 self.__presence.update(
-                    details=details,
-                    state=state,
-                    large_image=artwork,
+                    details=self.last_tab.title,
+                    state=self.last_tab.artist,
+                    large_image=self.last_tab.artwork,
                     large_text=f"{self.title} v{self.version}",
                     small_image="pause" if self.last_tab.pause else "play",
                     small_text=self.__browser["fullname"],
@@ -131,7 +128,9 @@ class App:
                             "url": "https://manucabral.github.io/YoutubeMusicRPC/",
                         },
                     ],
-                    start=time.time(),
+                    # TODO: enhance time left
+                    start=self.last_tab.start,
+                    end=self.last_tab.end,
                 )
                 time.sleep(DISCORD_STATUS_LIMIT)
         except Exception as exc:
