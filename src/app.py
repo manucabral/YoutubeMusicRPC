@@ -106,6 +106,10 @@ class App:
                     time.sleep(DISCORD_STATUS_LIMIT)
                     continue
                 tab = tab[0]
+                if self.last_tab == tab:
+                    Logger.write(message="Same tab.", origin=self)
+                    time.sleep(DISCORD_STATUS_LIMIT)
+                    continue
                 self.last_tab = tab
                 Logger.write(
                     message=f"Playing {self.last_tab.title} by {self.last_tab.artist}",
@@ -126,8 +130,7 @@ class App:
                         },
                     ],
                     # TODO: enhance time left
-                    start=self.last_tab.start,
-                    end=self.last_tab.end,
+                    start=time.time()
                 )
                 time.sleep(DISCORD_STATUS_LIMIT)
         except Exception as exc:

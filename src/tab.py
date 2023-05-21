@@ -1,5 +1,5 @@
 import json
-import time
+import datetime
 from .client import Client
 
 
@@ -51,22 +51,14 @@ class Tab:
         self.artist = self.metadata[2] if self.metadata[2] else "Unknown"
         self.album = self.metadata[3] if self.metadata[3] else "Unknown"
         self.artwork = self.metadata[4] if self.metadata[4] else "logo"
-        if 'http' in self.metadata[5]:
+        if "http" in self.metadata[5]:
             # detects ads, todo implement better way.
             self.start = self.end = 1
-            self.artist = 'Advertisement'
+            self.artist = "Advertisement"
             return
+        # TODO: parse times to unix epoch
         times = self.metadata[5].split(" / ")
-        self.start = self.strtotime(times[0])
-        self.end = self.strtotime(times[1])
-
-    def strtotime(self, _time: str) -> int:
-        if not _time:
-            return 0
-        m, s = _time.split(":")
-        time_s = int(m) * 60 + int(s)
-        return time.time() + time_s
-
+    
     def close(self):
         if self.connected:
             self.__connection.disconnect()
