@@ -106,8 +106,11 @@ class App:
                     time.sleep(DISCORD_STATUS_LIMIT)
                     continue
                 tab = tab[0]
+                if tab.ad:
+                    Logger.write(message="Ad detected.", origin=self)
+                    time.sleep(DISCORD_STATUS_LIMIT)
+                    continue
                 if self.last_tab == tab:
-                    Logger.write(message="Same tab.", origin=self)
                     time.sleep(DISCORD_STATUS_LIMIT)
                     continue
                 self.last_tab = tab

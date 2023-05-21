@@ -38,6 +38,7 @@ class Tab:
                         navigator.mediaSession.metadata.album, \
                         navigator.mediaSession.metadata.artwork[0].src, \
                         document.querySelector('#left-controls > span').textContent.trim(),\
+                        document.querySelector('.badge-style-type-ad-stark').hidden,\
                     ].join([separator = '#'])"
                 },
             )
@@ -45,6 +46,7 @@ class Tab:
         if not self.metadata:
             self.pause = False
             return
+        self.ad = self.metadata[6] == "false"
         self.playing = self.metadata[0] == "playing"
         self.pause = self.metadata[0] == "paused"
         self.title = self.metadata[1] if self.metadata[1] else "Unknown"
@@ -52,7 +54,6 @@ class Tab:
         self.album = self.metadata[3] if self.metadata[3] else "Unknown"
         self.artwork = self.metadata[4] if self.metadata[4] else "logo"
         if "http" in self.metadata[5]:
-            # detects ads, todo implement better way.
             self.start = self.end = 1
             self.artist = "Advertisement"
             return
