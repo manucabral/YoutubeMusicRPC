@@ -22,4 +22,25 @@ BROWSERS = [
         "progid": "EdgeHTML",
         "chromium": True,
     },
+    {
+        "name": "Opera",
+        "fullname": "Opera",
+        "process": {"win32": "opera.exe", "linux": "..."},
+        "progid": "OperaHTML",
+        "chromium": True,
+    },
+    {
+        "name": "Opera GXStable",
+        "fullname": "Opera GX",
+        "process": {"win32": "opera.exe", "linux": "..."},
+        "progid": "OperaGXHTML",
+        "chromium": True,
+    },
+    {
+        "name": "OperaDev",
+        "fullname": "Opera Developer (Opera One)",
+        "process": {"win32": "opera.exe", "linux": "..."},
+        "progid": "Operadeveloper",
+        "chromium": True,
+    }
 ]
