@@ -1,4 +1,5 @@
 import json
+import time
 from .client import Client
 
 
@@ -36,6 +37,7 @@ class Tab:
                         navigator.mediaSession.metadata.artist, \
                         navigator.mediaSession.metadata.album, \
                         navigator.mediaSession.metadata.artwork[0].src, \
+                        document.querySelector('#left-controls > span').textContent.trim(),\
                     ].join([separator = '#'])"
                 },
             )
@@ -45,10 +47,25 @@ class Tab:
             return
         self.playing = self.metadata[0] == "playing"
         self.pause = self.metadata[0] == "paused"
-        self.title = self.metadata[1]
-        self.artist = self.metadata[2]
-        self.album = self.metadata[3]
-        self.artwork = self.metadata[4]
+        self.title = self.metadata[1] if self.metadata[1] else "Unknown"
+        self.artist = self.metadata[2] if self.metadata[2] else "Unknown"
+        self.album = self.metadata[3] if self.metadata[3] else "Unknown"
+        self.artwork = self.metadata[4] if self.metadata[4] else "logo"
+        if 'http' in self.metadata[5]:
+            # detects ads, todo implement better way.
+            self.start = self.end = 1
+            self.artist = 'Advertisement'
+            return
+        times = self.metadata[5].split(" / ")
+        self.start = self.strtotime(times[0])
+        self.end = self.strtotime(times[1])
+
+    def strtotime(self, _time: str) -> int:
+        if not _time:
+            return 0
+        m, s = _time.split(":")
+        time_s = int(m) * 60 + int(s)
+        return time.time() + time_s
 
     def close(self):
         if self.connected:
