@@ -20,6 +20,8 @@ The lastest release is available [here](https://github.com/manucabral/YoutubeMus
 - Yandex Browser
 - Microsoft Edge
 - Opera (Normal, One and GX)
+- Brave Browser
+- Vivaldi Browser
 
 If you want support for another browser, please create an [issue](https://github.com/manucabral/YoutubeMusicRPC/issues).
 
