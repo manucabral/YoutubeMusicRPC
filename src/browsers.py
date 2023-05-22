@@ -42,5 +42,20 @@ BROWSERS = [
         "process": {"win32": "opera.exe", "linux": "..."},
         "progid": "Operadeveloper",
         "chromium": True,
+    },
+    {
+        "name": "Vivaldi",
+        "fullname": "Vivaldi Browser",
+        "process": {"win32": "vivaldi.exe", "linux": "..."},
+        "progid": "VivaldiHTML",
+        "chromium": True,
+    },
+    {
+        "name": "Brave",
+        "fullname": "Brave Browser",
+        "process": {"win32": "brave.exe", "linux": "..."},
+        "progid": "BraveHTML",
+        "chromium": True,
     }
+    
 ]
