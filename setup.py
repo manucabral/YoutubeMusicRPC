@@ -17,7 +17,7 @@ setup(
         Executable(
             "main.py",
             copyright="© 2020 - 2023 by " + __author__ + " - All rights reserved",
-            icon="assets/icon.ico",
+            icon="assets/new_logo.ico",
             targetName="Youtube Music Rich Presence.exe",
             shortcutName="Youtube Music RPC",
         )
