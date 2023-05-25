@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/logo.png?raw=true" width="250" title="example">
+<img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/new_logo.png?raw=true" width="250" title="example">
 <img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/app.png?raw=true" title="app">
 <img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/listening.png?raw=true" width="400" title="listening">
 <img src="https://github.com/manucabral/YouTubeMusicRPC/blob/main/assets/pause.png?raw=true" width="400" title="pause">
@@ -20,6 +20,8 @@ The lastest release is available [here](https://github.com/manucabral/YoutubeMus
 - Yandex Browser
 - Microsoft Edge
 - Opera (Normal, One and GX)
+- Brave Browser
+- Vivaldi Browser
 
 If you want support for another browser, please create an [issue](https://github.com/manucabral/YoutubeMusicRPC/issues).
 
