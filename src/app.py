@@ -3,7 +3,13 @@ import os
 from .presence import Presence
 from .logger import Logger
 from .tab import Tab
-from .utils import remote_debugging, run_browser, get_default_browser, get_browser_tabs
+from .utils import (
+    remote_debugging,
+    run_browser,
+    get_default_browser,
+    get_browser_tabs,
+    find_windows_process,
+)
 
 DISCORD_STATUS_LIMIT = 15
 
@@ -52,7 +58,6 @@ class App:
                 raise Exception("You have an unsupported browser.")
             self.connected = True
             Logger.write(message=f"{self.__browser['fullname']} detected.", origin=self)
-            Logger.write(message="synced and connected.", origin=self)
         except Exception as exc:
             self.__handle_exception(exc)
 
@@ -82,18 +87,33 @@ class App:
         return None
 
     def run(self) -> None:
-        Logger.write(message="running.", origin=self)
         try:
             if not self.connected:
                 raise RuntimeError("Not connected.")
-            if not remote_debugging():
+            browser_process = self.__browser["process"]["win32"]
+            browser_running = find_windows_process(
+                browser_process, self.__browser["name"]
+            )
+            if not remote_debugging() and browser_running:
                 Logger.write(
-                    message="Remote debugging is not enabled.",
+                    message=f"Detected browser running ({browser_process}) without remote debugging enabled.",
                     level="WARNING",
                     origin=self,
                 )
-                Logger.write(message="Starting browser remote debugging..", origin=self)
+                raise RuntimeError("Please close all browser instances and try again.")
+            if not remote_debugging():
+                Logger.write(
+                    message="Remote debugging is not enabled, starting browser..",
+                    level="WARNING",
+                    origin=self,
+                )
                 run_browser(self.__browser)
+            else:
+                Logger.write(
+                    message="Remote debugging is enabled, connected successfully.",
+                    origin=self,
+                )
+            Logger.write(message="synced and connected.", origin=self)
             Logger.write(message="Starting presence loop..", origin=self)
             time.sleep(5)
             while self.connected:
@@ -133,7 +153,7 @@ class App:
                         },
                     ],
                     # TODO: enhance time left
-                    start=time.time()
+                    start=time.time(),
                 )
                 time.sleep(DISCORD_STATUS_LIMIT)
         except Exception as exc:
