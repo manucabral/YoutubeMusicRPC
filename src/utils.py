@@ -31,6 +31,14 @@ def find_browser(progid) -> dict:
     return None
 
 
+def find_windows_process(process_name: str, ref: str) -> bool:
+    res = sp.check_output(
+        "WMIC PROCESS WHERE \"name='{process_name}'\" GET ExecutablePath",
+        stderr=sp.PIPE,
+    ).decode()
+    return bool(re.search(ref, res))
+
+
 def get_default_browser() -> dict:
     progid = wr.QueryValueEx(
         wr.OpenKey(
