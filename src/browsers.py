@@ -56,5 +56,5 @@ BROWSERS = [
         "process": {"win32": "brave.exe", "linux": "..."},
         "progid": "BraveHTML",
         "chromium": True,
-    }
+    },
 ]

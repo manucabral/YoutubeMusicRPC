@@ -59,7 +59,7 @@ class Tab:
             return
         # TODO: parse times to unix epoch
         times = self.metadata[5].split(" / ")
-    
+
     def close(self):
         if self.connected:
             self.__connection.disconnect()
