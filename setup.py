@@ -18,8 +18,8 @@ setup(
             "main.py",
             copyright="© 2020 - 2023 by " + __author__ + " - All rights reserved",
             icon="assets/new_logo.ico",
-            targetName="Youtube Music Rich Presence.exe",
-            shortcutName="Youtube Music RPC",
+            target_name="Youtube Music Rich Presence.exe",
+            shortcut_name="Youtube Music RPC",
         )
     ],
 )
