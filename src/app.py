@@ -123,6 +123,18 @@ class App:
                 ]
                 if not tab:
                     Logger.write(message="No tab found.", origin=self)
+                    self.__presence.update(
+                        details="No activity",
+                        large_image="logo",
+                        small_image="pause",
+                        small_text=self.__browser["fullname"],
+                        buttons=[
+                            {
+                                "label": "Download App",
+                                "url": "https://manucabral.github.io/YoutubeMusicRPC/",
+                            },
+                        ],
+                    )
                     time.sleep(DISCORD_STATUS_LIMIT)
                     continue
                 tab = tab[0]
