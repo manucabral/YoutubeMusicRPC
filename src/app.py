@@ -24,13 +24,16 @@ class App:
         "connected",
         "version",
         "title",
+        "__profileName"
     )
 
     def __init__(
         self,
-        client_id: str = None,
+        client_id: str = "1145497578583105596",
         version: str = None,
         title: str = None,
+        profileName: str = "Default",
+        
     ):
         os.system("title " + title + " v" + version)
         Logger.write(message=f"{title} v{version}", level="INFO", origin=self)
@@ -41,6 +44,7 @@ class App:
         self.last_tab = None
         self.connected = False
         self.__browser = None
+        self.__profileName = profileName or "Default"
 
     def __handle_exception(self, exc: Exception) -> None:
         Logger.write(message=exc, level="ERROR", origin=self)
@@ -87,6 +91,8 @@ class App:
         return None
 
     def run(self) -> None:
+        global lastUpdated
+        lastUpdated = 1
         try:
             if not self.connected:
                 raise RuntimeError("Not connected.")
@@ -107,7 +113,7 @@ class App:
                     level="WARNING",
                     origin=self,
                 )
-                run_browser(self.__browser)
+                run_browser(self.__browser, self.__profileName)
             else:
                 Logger.write(
                     message="Remote debugging is enabled, connected successfully.",
@@ -115,7 +121,7 @@ class App:
                 )
             Logger.write(message="synced and connected.", origin=self)
             Logger.write(message="Starting presence loop..", origin=self)
-            time.sleep(5)
+            time.sleep(3)
             while self.connected:
                 tabs = self.update_tabs()
                 tab = [tab for tab in tabs if tab.playing] or [
@@ -135,7 +141,7 @@ class App:
                             },
                         ],
                     )
-                    time.sleep(DISCORD_STATUS_LIMIT)
+                    time.sleep(15)
                     continue
                 tab = tab[0]
                 if tab.ad:
@@ -143,8 +149,15 @@ class App:
                     time.sleep(DISCORD_STATUS_LIMIT)
                     continue
                 if self.last_tab == tab:
-                    time.sleep(DISCORD_STATUS_LIMIT)
+                    time.sleep(2)
                     continue
+                if lastUpdated + 15 > time.time():
+                    remaining = time.time() - (lastUpdated + 15)
+                    if remaining < 0:
+                        remaining = 1
+                    time.sleep(remaining)
+                    continue
+                lastUpdated = time.time()
                 self.last_tab = tab
                 Logger.write(
                     message=f"Playing {self.last_tab.title} by {self.last_tab.artist}",
@@ -158,7 +171,7 @@ class App:
                     small_image="pause" if self.last_tab.pause else "play",
                     small_text=self.__browser["fullname"],
                     buttons=[
-                        {"label": "Listen to Youtube Music", "url": self.last_tab.url},
+                        {"label": "Listen In Youtube Music", "url": self.last_tab.url},
                         {
                             "label": "Download App",
                             "url": "https://manucabral.github.io/YoutubeMusicRPC/",
@@ -167,7 +180,7 @@ class App:
                     # TODO: enhance time left
                     start=time.time(),
                 )
-                time.sleep(DISCORD_STATUS_LIMIT)
+                time.sleep(2)
         except Exception as exc:
             self.__handle_exception(exc)
             if exc.__class__.__name__ == "URLError":
