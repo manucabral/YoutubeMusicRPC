@@ -1,5 +1,6 @@
 import time
 import os
+import math
 from .presence import Presence
 from .logger import Logger
 from .tab import Tab
@@ -24,16 +25,19 @@ class App:
         "connected",
         "version",
         "title",
-        "__profileName"
+        "__profileName",
+        "refreshRate",
+        "useTimeLeft"
     )
 
     def __init__(
         self,
-        client_id: str = "1145497578583105596",
+        client_id: str = "",
         version: str = None,
         title: str = None,
         profileName: str = "Default",
-        
+        refreshRate: int = 1,
+        useTimeLeft: str = "yes"
     ):
         os.system("title " + title + " v" + version)
         Logger.write(message=f"{title} v{version}", level="INFO", origin=self)
@@ -44,7 +48,9 @@ class App:
         self.last_tab = None
         self.connected = False
         self.__browser = None
-        self.__profileName = profileName or "Default"
+        self.refreshRate = refreshRate
+        self.useTimeLeft = useTimeLeft
+        self.__profileName = profileName
 
     def __handle_exception(self, exc: Exception) -> None:
         Logger.write(message=exc, level="ERROR", origin=self)
@@ -92,6 +98,13 @@ class App:
 
     def run(self) -> None:
         global lastUpdated
+        global compareTab
+        compareTab = {
+            "title": "",
+            "artist": "",
+            "artwork": "",
+            "lastTime": 0
+        }
         lastUpdated = 1
         try:
             if not self.connected:
@@ -123,6 +136,7 @@ class App:
             Logger.write(message="Starting presence loop..", origin=self)
             time.sleep(3)
             while self.connected:
+                #time.sleep(self.refreshRate)
                 tabs = self.update_tabs()
                 tab = [tab for tab in tabs if tab.playing] or [
                     tab for tab in tabs if tab.pause
@@ -141,16 +155,30 @@ class App:
                             },
                         ],
                     )
-                    time.sleep(15)
+                    time.sleep(DISCORD_STATUS_LIMIT)
                     continue
                 tab = tab[0]
+                compareTab["title"] = tab.title
+                compareTab["artwork"] = tab.artwork
+                compareTab["artist"] = tab.artist
+                compareTab["lastTime"] = tab.start
                 if tab.ad:
                     Logger.write(message="Ad detected.", origin=self)
                     time.sleep(DISCORD_STATUS_LIMIT)
                     continue
                 if self.last_tab == tab:
-                    time.sleep(2)
-                    continue
+                    #fixed problem where it didn't detect the page change (appears to happen sometimes in playlists)
+                    if (compareTab["title"] == self.last_tab.title and compareTab["artist"] == self.last_tab.artist):
+                        time.sleep(self.refreshRate)
+                        continue
+                if self.last_tab:
+                    if (compareTab["title"] == self.last_tab.title and compareTab["artist"] == self.last_tab.artist):
+                        time.sleep(self.refreshRate)
+                        continue
+                    if self.last_tab.start == compareTab["lastTime"]:
+                        time.sleep(self.refreshRate)
+                        continue
+
                 if lastUpdated + 15 > time.time():
                     remaining = time.time() - (lastUpdated + 15)
                     if remaining < 0:
@@ -163,6 +191,11 @@ class App:
                     message=f"Playing {self.last_tab.title} by {self.last_tab.artist}",
                     origin=self,
                 )
+                def useTimeLeft(answer):
+                    if answer == "yes":
+                        return self.last_tab.end + self.refreshRate
+                    return None
+
                 self.__presence.update(
                     details=self.last_tab.title,
                     state=self.last_tab.artist,
@@ -177,10 +210,11 @@ class App:
                             "url": "https://manucabral.github.io/YoutubeMusicRPC/",
                         },
                     ],
-                    # TODO: enhance time left
-                    start=time.time(),
+                    # TODO: enhance time left -> Done! --Nelly
+                    start= self.last_tab.start,
+                    end = useTimeLeft(self.useTimeLeft)
                 )
-                time.sleep(2)
+                #time.sleep(self.refreshRate)
         except Exception as exc:
             self.__handle_exception(exc)
             if exc.__class__.__name__ == "URLError":
