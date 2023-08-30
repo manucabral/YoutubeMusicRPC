@@ -31,4 +31,6 @@ __all__ = ["App", "Logger"]
 __title__ = "Youtube Music RPC"
 __version__ = "0.5.3"
 __author__ = "Manuel Cabral"
+__contributors__ = ["Nelly Angels"]
 __license__ = "MIT"
+__clientid___ = "828083725790609459"
