@@ -1,9 +1,11 @@
 import json
 import datetime
+import time
 from .client import Client
-
+import math
 
 class Tab:
+    
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
         self.connected = False
@@ -25,6 +27,48 @@ class Tab:
             self.connected = True
 
     def sync(self):
+        global LastTime
+        LastTime = 4
+        def filterZeros(string: str):
+            if string.startswith("0") and len(string) > 1:
+                return int(string[1:])
+            return int(string)
+        def checkForUpdate(eclapsedTime):
+            if returnTimeInUnix(eclapsedTime) == LastTime:
+                startUnixTime = time.time()
+                return startUnixTime
+            return 
+
+        def returnTimeInUnix(dict: dict):
+            global TimeInUnix
+            global timeType
+            timeType = "Minutes"
+            TimeInUnix = 0
+            if len(dict) == 3:
+                timeType = "Hours"
+            elif len(dict) == 2:
+                timeType = "Minutes"
+            
+            if timeType == "Hours":
+                for x in range(0, len(dict), 1):
+                    filteredNumber = filterZeros(dict[x])
+                    if x == 0 :
+                        TimeInUnix = TimeInUnix + (filteredNumber*3600)
+                    elif x == 1:
+                        TimeInUnix = TimeInUnix + (filteredNumber*60)
+                    elif x == 2:
+                        TimeInUnix = TimeInUnix + filteredNumber
+                return TimeInUnix
+            if timeType == "Minutes":
+                for x in range(0, len(dict), 1):
+                    filteredNumber = filterZeros(dict[x])
+                    if x == 0:
+                        TimeInUnix = TimeInUnix + (filteredNumber*60)
+                    elif x == 1:
+                        TimeInUnix = TimeInUnix + filteredNumber
+                return TimeInUnix
+            
+
         if not self.connected:
             raise Exception("Tab is not connected")
         self.metadata = self.__parse_response(
@@ -57,8 +101,18 @@ class Tab:
             self.start = self.end = 1
             self.artist = "Advertisement"
             return
-        # TODO: parse times to unix epoch
+        # TODO: parse times to unix epoch -> Done! --Nelly
+
         times = self.metadata[5].split(" / ")
+        eclapsedTime = times[0].split(":")
+        timeLeft = times[1].split(":")
+        startUnixTime = time.time() - returnTimeInUnix(eclapsedTime)
+        EndUnixTime = time.time() + returnTimeInUnix(timeLeft)
+        LastTime = math.trunc(returnTimeInUnix(eclapsedTime))
+        self.start = math.trunc(startUnixTime)
+        self.end = math.trunc(EndUnixTime - returnTimeInUnix(eclapsedTime))
+        #print(eclapsedTime, returnTimeInUnix(eclapsedTime))
+        #print(times)
 
     def close(self):
         if self.connected:
