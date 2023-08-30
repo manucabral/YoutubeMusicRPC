@@ -12,11 +12,12 @@ def prepare_environment():
         raw_settings = {"firstRun": True}
     except json.decoder.JSONDecodeError:
         Logger.write(message="Invalid settings.json file.", level="ERROR")
+        Logger.write(message="Please delete settings.json and try again.")
         exit()
-    with open("settings.json", "w") as settings_file:
-        if raw_settings["firstRun"] is True:
+    if raw_settings["firstRun"] is True:
+        with open("settings.json", "w") as settings_file:
             # TODO: add system tray icon or cmd prompt selection
-            Logger.write(message="First run detected.", origin=__name__)
+            Logger.write(message="First run detected.")
             custom_clientid = input("Use custom ClientId? (yes/no): ")
             client_id = (
                 __clientid___
@@ -33,12 +34,15 @@ def prepare_environment():
                     "firstRun": False,
                     "client_id": client_id,
                     "profile_name": profile or "Default",
-                    "RefreshRate": int(refreshRate) or 1,
+                    "RefreshRate": refreshRate or 1,
                     "DisplayTimeLeft": useTimeLeft.lower() or "yes",
                 }
             )
-            settings_file.write(new_settings)
-    return json.load(open("settings.json"))
+            json.dump(json.loads(new_settings), settings_file)
+            Logger.write(message="Settings saved.")
+            return new_settings
+    Logger.write(message="Settings loaded successfully.")
+    return raw_settings
 
 
 if __name__ == "__main__":
