@@ -27,7 +27,7 @@ class App:
         "title",
         "__profileName",
         "refreshRate",
-        "useTimeLeft"
+        "useTimeLeft",
     )
 
     def __init__(
@@ -37,7 +37,7 @@ class App:
         title: str = None,
         profileName: str = "Default",
         refreshRate: int = 1,
-        useTimeLeft: str = "yes"
+        useTimeLeft: str = "yes",
     ):
         os.system("title " + title + " v" + version)
         Logger.write(message=f"{title} v{version}", level="INFO", origin=self)
@@ -99,12 +99,7 @@ class App:
     def run(self) -> None:
         global lastUpdated
         global compareTab
-        compareTab = {
-            "title": "",
-            "artist": "",
-            "artwork": "",
-            "lastTime": 0
-        }
+        compareTab = {"title": "", "artist": "", "artwork": "", "lastTime": 0}
         lastUpdated = 1
         try:
             if not self.connected:
@@ -136,7 +131,7 @@ class App:
             Logger.write(message="Starting presence loop..", origin=self)
             time.sleep(3)
             while self.connected:
-                #time.sleep(self.refreshRate)
+                # time.sleep(self.refreshRate)
                 tabs = self.update_tabs()
                 tab = [tab for tab in tabs if tab.playing] or [
                     tab for tab in tabs if tab.pause
@@ -167,12 +162,18 @@ class App:
                     time.sleep(DISCORD_STATUS_LIMIT)
                     continue
                 if self.last_tab == tab:
-                    #fixed problem where it didn't detect the page change (appears to happen sometimes in playlists)
-                    if (compareTab["title"] == self.last_tab.title and compareTab["artist"] == self.last_tab.artist):
+                    # fixed problem where it didn't detect the page change (appears to happen sometimes in playlists)
+                    if (
+                        compareTab["title"] == self.last_tab.title
+                        and compareTab["artist"] == self.last_tab.artist
+                    ):
                         time.sleep(self.refreshRate)
                         continue
                 if self.last_tab:
-                    if (compareTab["title"] == self.last_tab.title and compareTab["artist"] == self.last_tab.artist):
+                    if (
+                        compareTab["title"] == self.last_tab.title
+                        and compareTab["artist"] == self.last_tab.artist
+                    ):
                         time.sleep(self.refreshRate)
                         continue
                     if self.last_tab.start == compareTab["lastTime"]:
@@ -191,6 +192,7 @@ class App:
                     message=f"Playing {self.last_tab.title} by {self.last_tab.artist}",
                     origin=self,
                 )
+
                 def useTimeLeft(answer):
                     if answer == "yes":
                         return self.last_tab.end + self.refreshRate
@@ -211,10 +213,10 @@ class App:
                         },
                     ],
                     # TODO: enhance time left -> Done! --Nelly
-                    start= self.last_tab.start,
-                    end = useTimeLeft(self.useTimeLeft)
+                    start=self.last_tab.start,
+                    end=useTimeLeft(self.useTimeLeft),
                 )
-                #time.sleep(self.refreshRate)
+                # time.sleep(self.refreshRate)
         except Exception as exc:
             self.__handle_exception(exc)
             if exc.__class__.__name__ == "URLError":

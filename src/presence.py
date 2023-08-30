@@ -3,7 +3,6 @@ from .logger import Logger
 
 
 class Presence:
-
     __slots__ = ("__client_id", "__rpc")
 
     def __init__(self, client_id: str = None):

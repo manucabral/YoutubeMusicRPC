@@ -67,10 +67,17 @@ def get_browser_tabs(filter_url: str = "") -> list:
 
 
 def run_browser(browser: dict, profileDirec) -> None:
-    #profileDirec ="Profile 1"
+    # profileDirec ="Profile 1"
     profilePath = f'{os.environ["SYSTEMDRIVE"]}\\Users\\{os.getenv("USERNAME") + browser["profilePath"] + profileDirec}'
     sp.Popen(
-        [browser["path"], "--profile-directory="+profileDirec, "--user-data-dir"+profilePath,"--app-id=cinhimbnkkaeohfgghhklpknlkffjgod", "--remote-debugging-port=9222", "--remote-allow-origins=*"]
+        [
+            browser["path"],
+            "--profile-directory=" + profileDirec,
+            "--user-data-dir" + profilePath,
+            "--app-id=cinhimbnkkaeohfgghhklpknlkffjgod",
+            "--remote-debugging-port=9222",
+            "--remote-allow-origins=*",
+        ]
     )
 
 

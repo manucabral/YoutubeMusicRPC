@@ -4,8 +4,8 @@ import time
 from .client import Client
 import math
 
+
 class Tab:
-    
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
         self.connected = False
@@ -29,15 +29,17 @@ class Tab:
     def sync(self):
         global LastTime
         LastTime = 4
+
         def filterZeros(string: str):
             if string.startswith("0") and len(string) > 1:
                 return int(string[1:])
             return int(string)
+
         def checkForUpdate(eclapsedTime):
             if returnTimeInUnix(eclapsedTime) == LastTime:
                 startUnixTime = time.time()
                 return startUnixTime
-            return 
+            return
 
         def returnTimeInUnix(dict: dict):
             global TimeInUnix
@@ -48,14 +50,14 @@ class Tab:
                 timeType = "Hours"
             elif len(dict) == 2:
                 timeType = "Minutes"
-            
+
             if timeType == "Hours":
                 for x in range(0, len(dict), 1):
                     filteredNumber = filterZeros(dict[x])
-                    if x == 0 :
-                        TimeInUnix = TimeInUnix + (filteredNumber*3600)
+                    if x == 0:
+                        TimeInUnix = TimeInUnix + (filteredNumber * 3600)
                     elif x == 1:
-                        TimeInUnix = TimeInUnix + (filteredNumber*60)
+                        TimeInUnix = TimeInUnix + (filteredNumber * 60)
                     elif x == 2:
                         TimeInUnix = TimeInUnix + filteredNumber
                 return TimeInUnix
@@ -63,11 +65,10 @@ class Tab:
                 for x in range(0, len(dict), 1):
                     filteredNumber = filterZeros(dict[x])
                     if x == 0:
-                        TimeInUnix = TimeInUnix + (filteredNumber*60)
+                        TimeInUnix = TimeInUnix + (filteredNumber * 60)
                     elif x == 1:
                         TimeInUnix = TimeInUnix + filteredNumber
                 return TimeInUnix
-            
 
         if not self.connected:
             raise Exception("Tab is not connected")
@@ -111,8 +112,8 @@ class Tab:
         LastTime = math.trunc(returnTimeInUnix(eclapsedTime))
         self.start = math.trunc(startUnixTime)
         self.end = math.trunc(EndUnixTime - returnTimeInUnix(eclapsedTime))
-        #print(eclapsedTime, returnTimeInUnix(eclapsedTime))
-        #print(times)
+        # print(eclapsedTime, returnTimeInUnix(eclapsedTime))
+        # print(times)
 
     def close(self):
         if self.connected:

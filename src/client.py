@@ -4,7 +4,6 @@ import json
 
 
 class Client:
-
     __slots__ = ("url", "__ws")
 
     def __init__(self, url: None):
