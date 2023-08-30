@@ -6,7 +6,9 @@ class Logger:
     def write(**kwargs):
         message = kwargs.get("message", "No message provided.")
         level = kwargs.get("level", "INFO")
-        origin = kwargs.get("origin", "Unknown").__class__.__name__
+        origin = kwargs.get("origin", "App").__class__.__name__
+        if origin == "str":
+            origin = "App"
         output = f"{level.upper()} | {origin}: {message}"
         print(output)
         with open("client.log", "a", encoding="utf-8") as file:
