@@ -22,7 +22,7 @@ def prepare_environment():
             client_id = (
                 __clientid___
                 if custom_clientid.lower() == "no"
-                else int(input("App | Enter your ClientId (number): "))
+                else input("App | Enter your ClientId (number): ")
             )
             profile = input("App | Enter your Profile Name (Default): ")
             refreshRate = input("App | Refresh rate in seconds (number): ")
@@ -34,7 +34,7 @@ def prepare_environment():
                     "firstRun": False,
                     "client_id": client_id,
                     "profile_name": profile or "Default",
-                    "RefreshRate": refreshRate or 1,
+                    "RefreshRate": int(refreshRate) or 1,
                     "DisplayTimeLeft": useTimeLeft.lower() or "yes",
                 }
             )

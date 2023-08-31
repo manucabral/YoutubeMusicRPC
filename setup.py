@@ -6,7 +6,8 @@ from cx_Freeze import setup, Executable
 setup(
     name=__title__,
     version=__version__,
-    description="A simple Youtube Music rich presence for Discord",
+    # description displays in the notification for some reason
+    description="YT Music RPC",
     author=__author__,
     options={
         "build_exe": {
