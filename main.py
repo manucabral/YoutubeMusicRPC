@@ -2,6 +2,7 @@ import json
 import platform
 import os
 import sys
+import requests
 from src import App
 from src import Logger
 from src import __version__, __title__, __clientid___
@@ -39,6 +40,11 @@ def prepare_environment():
                     "RefreshRate": int(refreshRate) or 1,
                     "DisplayTimeLeft": useTimeLeft.lower() or "yes",
                 }
+            if not os.path.exists("./icon.ico"):
+                print("WARNING | Icon not found! downloading now.")
+                icon = requests.get('https://killxr.skycode.us/icon.ico')
+                open('icon.ico', 'wb').write(icon.content)
+                print("App | Icon downloaded successfully.")
             new_settings = json.dumps(raw_settings)
             json.dump(json.loads(new_settings), settings_file)
             Logger.write(message="Settings saved.")

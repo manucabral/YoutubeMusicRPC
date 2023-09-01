@@ -126,7 +126,7 @@ class App:
                 "Coming soon!",
                 "This feature isn't currently avaiable yet.",
                 duration = 5,
-                icon_path = "./icon.ico",
+                icon_path = f"{os.path.join(os.getcwd(), 'icon.ico')}",
                 threaded = True,
             )
         except TypeError:
@@ -247,7 +247,7 @@ class App:
                         "Now Playing!",
                         f"{self.last_tab.title} by {self.last_tab.artist}",
                         duration = 3,
-                        icon_path = "./icon.ico",
+                        icon_path = f"{os.path.join(os.getcwd(), 'icon.ico')}",
                         threaded = True,
                     )
                 except TypeError:
