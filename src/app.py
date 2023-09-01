@@ -1,9 +1,15 @@
 import time
 import os
 import math
+from infi.systray import SysTrayIcon
 from .presence import Presence
 from .logger import Logger
 from .tab import Tab
+from .notification import ToastNotifier
+import win32con
+import win32gui
+import ctypes
+import json
 from .utils import (
     remote_debugging,
     run_browser,
@@ -13,6 +19,7 @@ from .utils import (
 )
 
 DISCORD_STATUS_LIMIT = 15
+toast = ToastNotifier()
 
 
 class App:
@@ -28,6 +35,8 @@ class App:
         "__profileName",
         "refreshRate",
         "useTimeLeft",
+        "showen",
+        "systray",
     )
 
     def __init__(
@@ -48,6 +57,7 @@ class App:
         self.last_tab = None
         self.connected = False
         self.__browser = None
+        self.showen = True
         self.refreshRate = refreshRate
         self.useTimeLeft = useTimeLeft
         self.__profileName = profileName
@@ -69,13 +79,16 @@ class App:
             self.connected = True
             Logger.write(message=f"{self.__browser['fullname']} detected.", origin=self)
         except Exception as exc:
+            #raise exc
             self.__handle_exception(exc)
 
     def stop(self) -> None:
-        self.connected = False
-        self.__presence.close()
-        Logger.write(message="stopped.", origin=self)
-
+        if self.connected == True:
+            self.connected = False
+            self.systray.shutdown()
+            self.__presence.close()
+            Logger.write(message="stopped.", origin=self)
+        
     def update_tabs(self) -> None:
         tabs = []
         tab_list = get_browser_tabs(filter_url="music.youtube.com")
@@ -95,6 +108,35 @@ class App:
                 if tab.pause:
                     return tab
         return None
+    
+    def hideWindow(self, systray):
+        if self.showen is True:
+            self.showen = False
+            window = ctypes.windll.kernel32.GetConsoleWindow()
+            win32gui.ShowWindow(window, win32con.SW_HIDE)
+        elif self.showen is False:
+            self.showen = True
+            window = ctypes.windll.kernel32.GetConsoleWindow()
+            win32gui.ShowWindow(window, win32con.SW_SHOW)
+    
+    def update(self, systray):
+        toast = ToastNotifier()
+        try:
+            toast.show_toast(
+                "Coming soon!",
+                "This feature isn't currently avaiable yet.",
+                duration = 5,
+                icon_path = f"{os.path.join(os.getcwd(), 'icon.ico')}",
+                threaded = True,
+            )
+        except TypeError:
+            pass
+
+    def on_quit_callback(self, systray):
+        if self.connected == True:
+            self.connected = False
+            self.__presence.close()
+            Logger.write(message="stopped.", origin=self)
 
     def run(self) -> None:
         global lastUpdated
@@ -102,6 +144,9 @@ class App:
         compareTab = {"title": "", "artist": "", "artwork": "", "lastTime": 0}
         lastUpdated = 1
         try:
+            menu_options = (("Hide/Show Console", None, self.hideWindow), ("Force Update", None, self.update))
+            self.systray = SysTrayIcon("./icon.ico", "YT Music RPC", menu_options, on_quit=self.on_quit_callback)
+            self.systray.start()
             if not self.connected:
                 raise RuntimeError("Not connected.")
             browser_process = self.__browser["process"]["win32"]
@@ -197,7 +242,16 @@ class App:
                     if answer == "yes":
                         return self.last_tab.end + self.refreshRate
                     return None
-
+                try:
+                    toast.show_toast(
+                        "Now Playing!",
+                        f"{self.last_tab.title} by {self.last_tab.artist}",
+                        duration = 3,
+                        icon_path = f"{os.path.join(os.getcwd(), 'icon.ico')}",
+                        threaded = True,
+                    )
+                except TypeError:
+                    pass
                 self.__presence.update(
                     details=self.last_tab.title,
                     state=self.last_tab.artist,
@@ -219,6 +273,7 @@ class App:
                 # time.sleep(self.refreshRate)
         except Exception as exc:
             self.__handle_exception(exc)
+            # raise exc
             if exc.__class__.__name__ == "URLError":
                 Logger.write(
                     message="Please close all browser instances and try again. Also, close Youtube Music Desktop App if you are using it.",

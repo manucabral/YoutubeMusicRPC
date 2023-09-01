@@ -29,7 +29,7 @@ from .logger import Logger
 
 __all__ = ["App", "Logger"]
 __title__ = "Youtube Music RPC"
-__version__ = "0.5.3"
+__version__ = "0.5.5"
 __author__ = "Manuel Cabral"
 __contributors__ = ["Nelly Angels"]
 __license__ = "MIT"
