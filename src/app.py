@@ -9,6 +9,7 @@ from .notification import ToastNotifier
 import win32con
 import win32gui
 import ctypes
+import json
 from .utils import (
     remote_debugging,
     run_browser,
@@ -34,7 +35,8 @@ class App:
         "__profileName",
         "refreshRate",
         "useTimeLeft",
-        "showen"
+        "showen",
+        "systray",
     )
 
     def __init__(
@@ -81,10 +83,12 @@ class App:
             self.__handle_exception(exc)
 
     def stop(self) -> None:
-        self.connected = False
-        self.__presence.close()
-        Logger.write(message="stopped.", origin=self)
-
+        if self.connected == True:
+            self.connected = False
+            self.systray.shutdown()
+            self.__presence.close()
+            Logger.write(message="stopped.", origin=self)
+        
     def update_tabs(self) -> None:
         tabs = []
         tab_list = get_browser_tabs(filter_url="music.youtube.com")
@@ -129,8 +133,10 @@ class App:
             pass
 
     def on_quit_callback(self, systray):
-        self.stop()
-    
+        if self.connected == True:
+            self.connected = False
+            self.__presence.close()
+            Logger.write(message="stopped.", origin=self)
 
     def run(self) -> None:
         global lastUpdated
@@ -139,8 +145,8 @@ class App:
         lastUpdated = 1
         try:
             menu_options = (("Hide/Show Console", None, self.hideWindow), ("Force Update", None, self.update))
-            systray = SysTrayIcon("./icon.ico", "YT Music RPC", menu_options, on_quit=self.on_quit_callback)
-            systray.start()
+            self.systray = SysTrayIcon("./icon.ico", "YT Music RPC", menu_options, on_quit=self.on_quit_callback)
+            self.systray.start()
             if not self.connected:
                 raise RuntimeError("Not connected.")
             browser_process = self.__browser["process"]["win32"]
@@ -267,7 +273,7 @@ class App:
                 # time.sleep(self.refreshRate)
         except Exception as exc:
             self.__handle_exception(exc)
-            #raise exc
+            # raise exc
             if exc.__class__.__name__ == "URLError":
                 Logger.write(
                     message="Please close all browser instances and try again. Also, close Youtube Music Desktop App if you are using it.",
