@@ -72,7 +72,7 @@ if __name__ == "__main__":
             )
             exit()
         os.system(
-            f"cmd /c taskkill /IM WindowsTerminal.exe /F"
+            f"cmd /c taskkill /IM WindowsTerminal.exe /IM cmd.exe /F"
         )  # removed /IM cmd.exe in case that causes problems for windows 10. Windows 11 requires starting a new task and killing windows terminal.
         app = App(
             client_id=settings["client_id"],

@@ -1,5 +1,4 @@
 import websocket
-import asyncio
 import json
 
 
