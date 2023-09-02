@@ -54,6 +54,12 @@ The application opens your browser with remote debugging enabled (Chrome Dev Too
 ## 📜 License & Disclaimer
 This application is not an official product of YouTube or Google and is licensed under the MIT License.
 
+## 👥Contributors
+
+We would like to thank the following individuals for their contributions to this project:
+- [Shuckes](https://github.com/Shuckes)
+- [Nelly Angels](https://github.com/KILLXRX)
+
 ## ✨ Contributing
 All contributions, including bug reports, fixes, enhancements, and new ideas are welcome!
 If you want to contribute, simply create a pull request or an issue. We will review your submission and get back to you as soon as possible.
