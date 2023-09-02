@@ -1,6 +1,5 @@
 import time
 import os
-import math
 from infi.systray import SysTrayIcon
 from .presence import Presence
 from .logger import Logger
@@ -9,7 +8,6 @@ from .notification import ToastNotifier
 import win32con
 import win32gui
 import ctypes
-import json
 from .utils import (
     remote_debugging,
     run_browser,
