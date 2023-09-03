@@ -33,9 +33,10 @@ class Presence:
         except Exception as exc:
             self.__handle_exception(exc)
 
-    def update(self, **kwargs) -> None:
+    def update(self, silent=False,**kwargs) -> None:
         try:
             self.__rpc.update(**kwargs)
-            Logger.write(message="updated.", origin=self)
+            if not silent:
+                Logger.write(message="updated.", origin=self)
         except Exception as exc:
             self.__handle_exception(exc)

@@ -206,15 +206,19 @@ class App:
                     Logger.write(message="Ad detected.", origin=self)
                     time.sleep(DISCORD_STATUS_LIMIT)
                     continue
-                if self.last_tab == tab:
+                if self.last_tab and self.last_tab == tab:
                     # fixed problem where it didn't detect the page change (appears to happen sometimes in playlists)
+                    self.silent = self.last_tab.end + self.refreshRate < time.time()
                     if (
                         compareTab["title"] == self.last_tab.title
                         and compareTab["artist"] == self.last_tab.artist
-                        and self.last_tab.end + self.refreshRate < time.time()
+                        and self.last_tab.end + self.refreshRate > time.time()
+                        and not tab.pause
                     ):
                         time.sleep(self.refreshRate)
                         continue
+                if tab.pause:
+                    self.silent = True
 
                 if self.last_tab:
                     if self.last_tab.start == compareTab["lastTime"]:
@@ -229,13 +233,6 @@ class App:
                     continue
                 lastUpdated = time.time()
                 self.last_tab = tab
-                # check if there's a problem with timeleft
-                if self.last_tab.end + self.refreshRate < time.time():
-                    time.sleep(remaining)
-                    continue
-                
-                if (compareTab["title"] == self.last_tab.title and compareTab["artist"] == self.last_tab.artist):
-                    self.silent = True
 
                 Logger.write(
                     message=f"Playing {self.last_tab.title} by {self.last_tab.artist}",
@@ -261,6 +258,7 @@ class App:
                         pass
                 
                 self.__presence.update(
+                    silent=self.silent,
                     details=self.last_tab.title,
                     state=self.last_tab.artist,
                     large_image=self.last_tab.artwork,
