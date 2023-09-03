@@ -35,6 +35,7 @@ class App:
         "useTimeLeft",
         "showen",
         "systray",
+        "silent"
     )
 
     def __init__(
@@ -58,6 +59,7 @@ class App:
         self.showen = True
         self.refreshRate = refreshRate
         self.useTimeLeft = useTimeLeft
+        self.silent = False
         self.__profileName = profileName
 
     def __handle_exception(self, exc: Exception) -> None:
@@ -174,7 +176,7 @@ class App:
             Logger.write(message="Starting presence loop..", origin=self)
             time.sleep(3)
             while self.connected:
-                # time.sleep(self.refreshRate)
+                self.silent = False
                 tabs = self.update_tabs()
                 tab = [tab for tab in tabs if tab.playing] or [
                     tab for tab in tabs if tab.pause
@@ -209,16 +211,12 @@ class App:
                     if (
                         compareTab["title"] == self.last_tab.title
                         and compareTab["artist"] == self.last_tab.artist
+                        and self.last_tab.end + self.refreshRate < time.time()
                     ):
                         time.sleep(self.refreshRate)
                         continue
+
                 if self.last_tab:
-                    if (
-                        compareTab["title"] == self.last_tab.title
-                        and compareTab["artist"] == self.last_tab.artist
-                    ):
-                        time.sleep(self.refreshRate)
-                        continue
                     if self.last_tab.start == compareTab["lastTime"]:
                         time.sleep(self.refreshRate)
                         continue
@@ -231,25 +229,37 @@ class App:
                     continue
                 lastUpdated = time.time()
                 self.last_tab = tab
+                # check if there's a problem with timeleft
+                if self.last_tab.end + self.refreshRate < time.time():
+                    time.sleep(remaining)
+                    continue
+                
+                if (compareTab["title"] == self.last_tab.title and compareTab["artist"] == self.last_tab.artist):
+                    self.silent = True
+
                 Logger.write(
                     message=f"Playing {self.last_tab.title} by {self.last_tab.artist}",
                     origin=self,
+                    silent=self.silent
                 )
 
                 def useTimeLeft(answer):
                     if answer == "yes":
                         return self.last_tab.end + self.refreshRate
                     return None
-                try:
-                    toast.show_toast(
-                        "Now Playing!",
-                        f"{self.last_tab.title} by {self.last_tab.artist}",
-                        duration = 3,
-                        icon_path = f"{os.path.join(os.getcwd(), 'icon.ico')}",
-                        threaded = True,
-                    )
-                except TypeError:
-                    pass
+                
+                if not self.silent:
+                    try:
+                        toast.show_toast(
+                            "Now Playing!",
+                            f"{self.last_tab.title} by {self.last_tab.artist}",
+                            duration = 3,
+                            icon_path = f"{os.path.join(os.getcwd(), 'icon.ico')}",
+                            threaded = True,
+                        )
+                    except TypeError:
+                        pass
+                
                 self.__presence.update(
                     details=self.last_tab.title,
                     state=self.last_tab.artist,
