@@ -10,6 +10,14 @@ BROWSERS = [
         "chromium": True,
     },
     {
+        "name": "Firefox",
+        "fullname": "Mozilla Firefox",
+        "process": {"win32": "firefox.exe", "linux": "firefox"},
+        "profilePath": "\\AppData\\Local\\Mozilla\\Firefox\\Profiles\\",
+        "progid": "FirefoxHTML",
+        "chromium": True,
+    },
+    {
         "name": "Yandex",
         "fullname": "Yandex Browser",
         "process": {"win32": "browser.exe", "linux": "yandex-browser"},
