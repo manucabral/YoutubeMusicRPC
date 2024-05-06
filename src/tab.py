@@ -69,6 +69,13 @@ class Tab:
                         TimeInUnix = TimeInUnix + filteredNumber
                 return TimeInUnix
 
+        def filter_metadata(metadata: str):
+            """Adds empty char to 1 len metadata as PyPresence does not allow 1 len"""
+            if not metadata or metadata == "": return "Unknown" 
+            if len(metadata) == 1:
+                return metadata + chr(0)
+            return metadata
+
         if not self.connected:
             raise Exception("Tab is not connected")
         self.metadata = self.__parse_response(
@@ -93,9 +100,10 @@ class Tab:
         self.ad = self.metadata[6] == "false"
         self.playing = self.metadata[0] == "playing"
         self.pause = self.metadata[0] == "paused"
-        self.title = self.metadata[1] if self.metadata[1] else "Unknown"
-        self.artist = self.metadata[2] if self.metadata[2] else "Unknown"
-        self.album = self.metadata[3] if self.metadata[3] else "Unknown"
+        self.title = filter_metadata(self.metadata[1])
+        self.artist = filter_metadata(self.metadata[2])
+        #TODO: album is never used
+        #self.album = self.metadata[3] if self.metadata[3] else "Unknown"
         self.artwork = self.metadata[4] if self.metadata[4] else "logo"
         if "http" in self.metadata[5]:
             self.start = self.end = 1
