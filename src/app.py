@@ -198,14 +198,14 @@ class App:
                     time.sleep(DISCORD_STATUS_LIMIT)
                     continue
                 tab = tab[0]
-                compareTab["title"] = tab.title
-                compareTab["artwork"] = tab.artwork
-                compareTab["artist"] = tab.artist
-                compareTab["lastTime"] = tab.start
                 if tab.ad:
                     Logger.write(message="Ad detected.", origin=self)
                     time.sleep(DISCORD_STATUS_LIMIT)
                     continue
+                compareTab["title"] = tab.title
+                compareTab["artwork"] = tab.artwork
+                compareTab["artist"] = tab.artist
+                compareTab["lastTime"] = tab.start
                 if self.last_tab and self.last_tab == tab:
                     # fixed problem where it didn't detect the page change (appears to happen sometimes in playlists)
                     self.silent = self.last_tab.end + self.refreshRate < time.time()

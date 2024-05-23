@@ -16,9 +16,7 @@ class Tab:
 
     def __parse_response(self, response: str) -> dict:
         data = json.loads(response)["result"]["result"]
-        if data["value"] is None:
-            return None
-        return json.loads(response)["result"]["result"]["value"].split("#")
+        return data["value"]
 
     def connect(self):
         if not self.connected:
@@ -75,43 +73,38 @@ class Tab:
             if len(metadata) == 1:
                 return metadata + chr(0)
             return metadata
-
         if not self.connected:
             raise Exception("Tab is not connected")
         self.metadata = self.__parse_response(
             self.__execute(
                 "Runtime.evaluate",
                 {
-                    "expression": "navigator.mediaSession.metadata && [\
-                        navigator.mediaSession.playbackState, \
-                        navigator.mediaSession.metadata.title, \
-                        navigator.mediaSession.metadata.artist, \
-                        navigator.mediaSession.metadata.album, \
-                        navigator.mediaSession.metadata.artwork[0].src, \
-                        document.querySelector('#left-controls > span').textContent.trim(),\
-                        document.querySelector('.badge-style-type-ad-stark').hidden,\
-                    ].join([separator = '#'])"
+                    "expression": """
+                        navigator.mediaSession.metadata && {
+                            "playbackState"   : navigator.mediaSession.playbackState, 
+                            "title"     : navigator.mediaSession.metadata.title, 
+                            "artist"    : navigator.mediaSession.metadata.artist, 
+                            "album"     : navigator.mediaSession.metadata.album, 
+                            "artwork"   : navigator.mediaSession.metadata.artwork[0].src, 
+                            "time"      : document.querySelector('#left-controls > span').textContent.trim(),
+                            "advertisement"        : !document.querySelector('.badge-style-type-ad-stark').hidden,
+                        }
+                    """,
+                    "returnByValue": True
                 },
             )
         )
         if not self.metadata:
             self.pause = False
             return
-        self.ad = self.metadata[6] == "false"
-        self.playing = self.metadata[0] == "playing"
-        self.pause = self.metadata[0] == "paused"
-        self.title = filter_metadata(self.metadata[1])
-        self.artist = filter_metadata(self.metadata[2])
-        #TODO: album is never used
-        #self.album = self.metadata[3] if self.metadata[3] else "Unknown"
-        self.artwork = self.metadata[4] if self.metadata[4] else "logo"
-        if "http" in self.metadata[5]:
-            self.start = self.end = 1
-            self.artist = "Advertisement"
-            return
-        # TODO: parse times to unix epoch -> Done! --Nelly
+        self.playing = self.metadata["playbackState"] == "playing"
+        self.pause = self.metadata["playbackState"] == "paused"
+        self.ad = self.metadata["advertisement"]
+        self.title = filter_metadata(self.metadata["title"])
+        self.artist = filter_metadata(self.metadata["artist"])
+        self.artwork = self.metadata["artwork"] if self.metadata["artwork"] else "logo"
 
-        times = self.metadata[5].split(" / ")
+        times = self.metadata["time"].split(" / ")
         eclapsedTime = times[0].split(":")
         timeLeft = times[1].split(":")
         startUnixTime = time.time() - returnTimeInUnix(eclapsedTime)
@@ -119,8 +112,6 @@ class Tab:
         LastTime = math.trunc(returnTimeInUnix(eclapsedTime))
         self.start = math.trunc(startUnixTime)
         self.end = math.trunc(EndUnixTime - returnTimeInUnix(eclapsedTime))
-        # print(eclapsedTime, returnTimeInUnix(eclapsedTime))
-        # print(times)
 
     def close(self):
         if self.connected:
