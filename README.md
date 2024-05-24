@@ -59,6 +59,7 @@ This application is not an official product of YouTube or Google and is licensed
 We would like to thank the following individuals for their contributions to this project:
 - [Shuckes](https://github.com/Shuckes)
 - [Nelly Angels](https://github.com/KILLXRX)
+- [PickleUpADoodle](https://github.com/PickleUpADoodle)
 
 ## ✨ Contributing
 All contributions, including bug reports, fixes, enhancements, and new ideas are welcome!
