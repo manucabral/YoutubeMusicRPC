@@ -24,48 +24,34 @@ class Tab:
             self.connected = True
 
     def sync(self):
-        global LastTime
-        LastTime = 4
+        def remove_preceding_zero(int_as_string: str) -> int:
+            if int_as_string.startswith("0") and len(int_as_string) > 1:
+                return int(int_as_string[1:])
+            return int(int_as_string)
 
-        def filterZeros(string: str):
-            if string.startswith("0") and len(string) > 1:
-                return int(string[1:])
-            return int(string)
-
-        def checkForUpdate(eclapsedTime):
-            if returnTimeInUnix(eclapsedTime) == LastTime:
-                startUnixTime = time.time()
-                return startUnixTime
-            return
-
-        def returnTimeInUnix(dict: dict):
-            global TimeInUnix
-            global timeType
-            timeType = "Minutes"
-            TimeInUnix = 0
-            if len(dict) == 3:
-                timeType = "Hours"
-            elif len(dict) == 2:
-                timeType = "Minutes"
-
-            if timeType == "Hours":
-                for x in range(0, len(dict), 1):
-                    filteredNumber = filterZeros(dict[x])
-                    if x == 0:
-                        TimeInUnix = TimeInUnix + (filteredNumber * 3600)
-                    elif x == 1:
-                        TimeInUnix = TimeInUnix + (filteredNumber * 60)
-                    elif x == 2:
-                        TimeInUnix = TimeInUnix + filteredNumber
-                return TimeInUnix
-            if timeType == "Minutes":
-                for x in range(0, len(dict), 1):
-                    filteredNumber = filterZeros(dict[x])
-                    if x == 0:
-                        TimeInUnix = TimeInUnix + (filteredNumber * 60)
-                    elif x == 1:
-                        TimeInUnix = TimeInUnix + filteredNumber
-                return TimeInUnix
+        def filter_time_result_to_seconds(time_result: list[str]) -> int:
+            total_seconds: int = 0
+            time_length : int = len(time_result)
+            if time_length > 3:
+                return 0
+            includes_hours = time_length == 3 
+            if includes_hours:
+                for index, time_value in enumerate(time_result):
+                    cleaned_time = remove_preceding_zero(time_value)
+                    if(index == 0):
+                        total_seconds += (cleaned_time * 3600)
+                    elif(index == 1):
+                        total_seconds += (cleaned_time * 60)
+                    elif(index == 2 and includes_hours):
+                        total_seconds += cleaned_time
+            else:
+                for index, time_value in enumerate(time_result):
+                    cleaned_time = remove_preceding_zero(time_value)
+                    if(index == 0):
+                        total_seconds += (cleaned_time * 60)
+                    elif(index == 1):
+                        total_seconds += cleaned_time
+            return total_seconds
 
         def filter_metadata(metadata: str):
             """Adds empty char to 1 len metadata as PyPresence does not allow 1 len"""
@@ -97,6 +83,7 @@ class Tab:
         if not self.metadata:
             self.pause = False
             return
+        retrieval_time = time.time()
         self.playing = self.metadata["playbackState"] == "playing"
         self.pause = self.metadata["playbackState"] == "paused"
         self.ad = self.metadata["advertisement"]
@@ -105,13 +92,14 @@ class Tab:
         self.artwork = self.metadata["artwork"] if self.metadata["artwork"] else "logo"
 
         times = self.metadata["time"].split(" / ")
-        eclapsedTime = times[0].split(":")
-        timeLeft = times[1].split(":")
-        startUnixTime = time.time() - returnTimeInUnix(eclapsedTime)
-        EndUnixTime = time.time() + returnTimeInUnix(timeLeft)
-        LastTime = math.trunc(returnTimeInUnix(eclapsedTime))
-        self.start = math.trunc(startUnixTime)
-        self.end = math.trunc(EndUnixTime - returnTimeInUnix(eclapsedTime))
+        elapsed_seconds = filter_time_result_to_seconds(times[0].split(":"))
+        total_seconds = filter_time_result_to_seconds(times[1].split(":"))
+
+        start_time_unix = retrieval_time - elapsed_seconds
+        self.start_time = math.trunc(start_time_unix)
+
+        end_time_unix = retrieval_time + total_seconds # Would be end time if just started to play now
+        self.projected_end_time = math.trunc(end_time_unix - elapsed_seconds)
 
     def close(self):
         if self.connected:
