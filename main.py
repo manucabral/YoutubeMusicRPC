@@ -9,18 +9,16 @@ from src import __version__, __title__, __clientid___
 
 
 def prepare_environment():
-    global raw_settings
     try:
         raw_settings = json.load(open("settings.json"))
     except FileNotFoundError:
-        raw_settings = {"firstRun": True}
+        raw_settings = {"first_run": True}
     except json.decoder.JSONDecodeError:
         Logger.write(message="Invalid settings.json file.", level="ERROR")
         os.remove("settings.json")
         exit()
-    if raw_settings["firstRun"] is True:
+    if raw_settings["first_run"] is True:
         with open("settings.json", "w") as settings_file:
-            # TODO: add system tray icon or cmd prompt selection --> Done! --Nelly
             Logger.write(message="First run detected.")
             custom_clientid = input("Use custom ClientId? (yes/no): ")
             client_id = (
@@ -29,16 +27,17 @@ def prepare_environment():
                 else input("App | Enter your ClientId (number): ")
             )
             profile = input("App | Enter your Profile Name (Default): ")
-            refreshRate = input("App | Refresh rate in seconds (number): ")
-            useTimeLeft = input(
+            #TODO: Sanitize refresh rate input, will crash if NaN
+            refresh_rate = input("App | Refresh rate in seconds (number): ")
+            use_time_left_choice = input(
                 "App | Display time remaining instead of elapsed time? (yes/no): "
             )
             raw_settings = {
-                "firstRun": False,
+                "first_run": False,
                 "client_id": client_id,
                 "profile_name": profile or "Default",
-                "RefreshRate": int(refreshRate) or 1,
-                "DisplayTimeLeft": useTimeLeft.lower() or "yes",
+                "refresh_rate": int(refresh_rate) or 1,
+                "display_time_left": True if use_time_left_choice.lower() == "yes" else False,
             }
             if not os.path.exists("./icon.ico"):
                 print("WARNING | Icon not found! downloading now.")
@@ -79,8 +78,8 @@ if __name__ == "__main__":
             version=__version__,
             title=__title__,
             profileName=settings["profile_name"],
-            refreshRate=settings["RefreshRate"],
-            useTimeLeft=settings["DisplayTimeLeft"],
+            refreshRate=settings["refresh_rate"],
+            useTimeLeft=settings["display_time_left"],
         )
         app.sync()
         app.run()

@@ -45,7 +45,7 @@ class App:
         title: str = None,
         profileName: str = "Default",
         refreshRate: int = 1,
-        useTimeLeft: str = "yes",
+        useTimeLeft: bool = True,
     ):
         os.system("title " + title + " v" + version)
         Logger.write(message=f"{title} v{version}", level="INFO", origin=self)
@@ -139,10 +139,7 @@ class App:
             Logger.write(message="stopped.", origin=self)
 
     def run(self) -> None:
-        global lastUpdated
-        global compareTab
-        compareTab = {"title": "", "artist": "", "artwork": "", "lastTime": 0}
-        lastUpdated = 1
+        last_updated_time: int = 1
         try:
             menu_options = (("Hide/Show Console", None, self.hideWindow), ("Force Update", None, self.update))
             self.systray = SysTrayIcon("./icon.ico", "YT Music RPC", menu_options, on_quit=self.on_quit_callback)
@@ -177,6 +174,7 @@ class App:
             time.sleep(3)
             while self.connected:
                 self.silent = False
+                update_unix_time: float = time.time()
                 tabs = self.update_tabs()
                 tab = [tab for tab in tabs if tab.playing] or [
                     tab for tab in tabs if tab.pause
@@ -202,36 +200,36 @@ class App:
                     Logger.write(message="Ad detected.", origin=self)
                     time.sleep(DISCORD_STATUS_LIMIT)
                     continue
-                compareTab["title"] = tab.title
-                compareTab["artwork"] = tab.artwork
-                compareTab["artist"] = tab.artist
-                compareTab["lastTime"] = tab.start
+
                 if self.last_tab and self.last_tab == tab:
                     # fixed problem where it didn't detect the page change (appears to happen sometimes in playlists)
-                    self.silent = self.last_tab.end + self.refreshRate < time.time()
+                    delta_estimated_end_times = abs(self.last_tab.projected_end_time - tab.projected_end_time)
+                    playstate_manually_adjusted = delta_estimated_end_times > 1 
+                    self.silent = self.last_tab.projected_end_time + self.refreshRate < update_unix_time or playstate_manually_adjusted
                     if (
-                        compareTab["title"] == self.last_tab.title
-                        and compareTab["artist"] == self.last_tab.artist
-                        and self.last_tab.end + self.refreshRate > time.time()
+                        tab.title == self.last_tab.title
+                        and tab.artist == self.last_tab.artist
+                        and tab.projected_end_time + self.refreshRate > update_unix_time
+                        and not playstate_manually_adjusted
                         and not tab.pause
                     ):
                         time.sleep(self.refreshRate)
                         continue
+
                 if tab.pause:
                     self.silent = True
 
-                if self.last_tab:
-                    if self.last_tab.start == compareTab["lastTime"]:
-                        time.sleep(self.refreshRate)
-                        continue
+                if self.last_tab and self.last_tab.start_time == tab.start_time:
+                    time.sleep(self.refreshRate)
+                    continue
 
-                if lastUpdated + 15 > time.time():
-                    remaining = time.time() - (lastUpdated + 15)
+                if last_updated_time + 15 > update_unix_time:
+                    remaining = update_unix_time - (last_updated_time + 15)
                     if remaining < 0:
                         remaining = 1
                     time.sleep(remaining)
                     continue
-                lastUpdated = time.time()
+                last_updated_time = update_unix_time
                 self.last_tab = tab
 
                 Logger.write(
@@ -239,11 +237,6 @@ class App:
                     origin=self,
                     silent=self.silent
                 )
-
-                def useTimeLeft(answer):
-                    if answer == "yes":
-                        return self.last_tab.end + self.refreshRate
-                    return None
                 
                 if not self.silent:
                     try:
@@ -272,9 +265,8 @@ class App:
                             "url": "https://manucabral.github.io/YoutubeMusicRPC/",
                         },
                     ],
-                    # TODO: enhance time left -> Done! --Nelly
-                    start=self.last_tab.start,
-                    end=useTimeLeft(self.useTimeLeft),
+                    start=self.last_tab.start_time,
+                    end=self.last_tab.projected_end_time + self.refreshRate if self.useTimeLeft else None
                 )
                 # time.sleep(self.refreshRate)
         except Exception as exc:
