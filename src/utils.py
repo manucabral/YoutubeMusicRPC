@@ -76,7 +76,7 @@ def run_browser(browser: dict, profileDirec) -> None:
             "--user-data-dir" + profilePath,
             "--app-id=cinhimbnkkaeohfgghhklpknlkffjgod",
             "--remote-debugging-port=9222",
-            "--remote-allow-origins=*",
+            "--remote-allow-origins=http://127.0.0.1:9222",
         ]
     )
 
