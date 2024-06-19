@@ -1,12 +1,15 @@
 import json
 import platform
 import os
-import sys
 import httpx
 from src import App
+from src.operating_systems.operating_system import OperatingSystem
+from src.operating_systems.windows_operating_system import WindowsOperatingSystem
+from src.operating_systems.linux_operating_system import LinuxOperatingSystem
+from src.notifiers.notifier import Notifier
+from src.notifiers.windows_notifier import WindowsNotifier
 from src import Logger
 from src import __version__, __title__, __clientid___
-
 
 def prepare_environment():
     try:
@@ -54,26 +57,23 @@ def prepare_environment():
 
 if __name__ == "__main__":
     try:
-        if platform.system() != "Windows":
-            Logger.write(message="Sorry! only supports Windows.", level="ERROR")
-            exit()
+        operating_system: str = platform.system()
+        system: OperatingSystem = None
+        notifier: Notifier = None
+        match operating_system:
+            case "Windows":
+                system = WindowsOperatingSystem()
+                notifier = WindowsNotifier()
+            case "Linux":
+                system = LinuxOperatingSystem()
+            case _:
+                Logger.write(message="Sorry! only supports Windows and Linux.", level="ERROR")
+                exit()
         settings = prepare_environment()
-        # using conhost to allow the functionality of hidding and showing the console.
-        if len(sys.argv) == 1 and sys.argv[0] != "main.py":
-            found = []
-            for file in os.listdir(os.getcwd()):
-                if file.endswith(".exe"):
-                    found.append(file)
-            file = found[0]
-            # print(f'cmd /k {os.environ["SYSTEMDRIVE"]}\\Windows\\System32\\conhost.exe ' + cmd)
-            os.system(
-                f'cmd /c {os.environ["SYSTEMDRIVE"]}\\Windows\\System32\\conhost.exe {os.path.join(os.getcwd(),file)} True'
-            )
-            exit()
-        os.system(
-            f"cmd /c taskkill /IM WindowsTerminal.exe /IM cmd.exe /F"
-        )  # removed /IM cmd.exe in case that causes problems for windows 10. Windows 11 requires starting a new task and killing windows terminal.
+        system.hide_console_process()
         app = App(
+            operating_system=system,
+            notifier=notifier,
             client_id=settings["client_id"],
             version=__version__,
             title=__title__,

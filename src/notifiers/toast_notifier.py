@@ -17,33 +17,36 @@ from pkg_resources import Requirement
 from pkg_resources import resource_filename
 
 # 3rd party modules
-from win32api import GetModuleHandle
-from win32api import PostQuitMessage
-from win32con import CW_USEDEFAULT
-from win32con import IDI_APPLICATION
-from win32con import IMAGE_ICON
-from win32con import LR_DEFAULTSIZE
-from win32con import LR_LOADFROMFILE
-from win32con import WM_DESTROY
-from win32con import WM_USER
-from win32con import WS_OVERLAPPED
-from win32con import WS_SYSMENU
-from win32gui import CreateWindow
-from win32gui import DestroyWindow
-from win32gui import LoadIcon
-from win32gui import LoadImage
-from win32gui import NIF_ICON
-from win32gui import NIF_INFO
-from win32gui import NIF_MESSAGE
-from win32gui import NIF_TIP
-from win32gui import NIM_ADD
-from win32gui import NIM_DELETE
-from win32gui import NIM_MODIFY
-from win32gui import RegisterClass
-from win32gui import UnregisterClass
-from win32gui import Shell_NotifyIcon
-from win32gui import UpdateWindow
-from win32gui import WNDCLASS
+try:
+    from win32api import GetModuleHandle
+    from win32api import PostQuitMessage
+    from win32con import CW_USEDEFAULT
+    from win32con import IDI_APPLICATION
+    from win32con import IMAGE_ICON
+    from win32con import LR_DEFAULTSIZE
+    from win32con import LR_LOADFROMFILE
+    from win32con import WM_DESTROY
+    from win32con import WM_USER
+    from win32con import WS_OVERLAPPED
+    from win32con import WS_SYSMENU
+    from win32gui import CreateWindow
+    from win32gui import DestroyWindow
+    from win32gui import LoadIcon
+    from win32gui import LoadImage
+    from win32gui import NIF_ICON
+    from win32gui import NIF_INFO
+    from win32gui import NIF_MESSAGE
+    from win32gui import NIF_TIP
+    from win32gui import NIM_ADD
+    from win32gui import NIM_DELETE
+    from win32gui import NIM_MODIFY
+    from win32gui import RegisterClass
+    from win32gui import UnregisterClass
+    from win32gui import Shell_NotifyIcon
+    from win32gui import UpdateWindow
+    from win32gui import WNDCLASS
+except ImportError:
+    pass
 
 # ############################################################################
 # ########### Classes ##############
