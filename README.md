@@ -27,6 +27,7 @@ If you want support for another browser, please create an [issue](https://github
 
 ## 📝Notes
 - Currently only compatible with Microsoft Windows systems.
+- It's recommended to use the system in English, Portuguese, or Spanish because there may be bugs.
 
 ## :grey_question: How does that work
 The application opens your browser with remote debugging enabled (Chrome Dev Tools) to access all YouTube Music tabs. Once this is done, the app executes a script to obtain all the data through [MediaSession](https://developer.mozilla.org/en-US/docs/Web/API/MediaSession) and finally creates a Rich Presence for Discord.
