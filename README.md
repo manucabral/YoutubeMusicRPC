@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> Unmaintained project, consider using [Rich Presence Plus](https://github.com/manucabral/RichPresencePlus)
+
 <p align="center">
 <img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/new_logo.png?raw=true" width="250" title="example">
 <img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/app.png?raw=true" title="app">
