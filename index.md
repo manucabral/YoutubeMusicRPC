@@ -1,3 +1,6 @@
+> [!IMPORTANT]
+> Unmaintained project, consider using [Rich Presence Plus](https://github.com/manucabral/RichPresencePlus)
+
 <p align="center">
 <img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/new_logo.png?raw=true" width="250" title="example">
 <img src="https://github.com/manucabral/YoutubeMusicRPC/blob/main/assets/app.png?raw=true" title="app">
@@ -27,6 +30,7 @@ If you want support for another browser, please create an [issue](https://github
 
 ## 📝Notes
 - Currently only compatible with Microsoft Windows systems.
+- It's recommended to use the system in English, Portuguese, or Spanish because there may be bugs.
 
 ## :grey_question: How does that work
 The application opens your browser with remote debugging enabled (Chrome Dev Tools) to access all YouTube Music tabs. Once this is done, the app executes a script to obtain all the data through [MediaSession](https://developer.mozilla.org/en-US/docs/Web/API/MediaSession) and finally creates a Rich Presence for Discord.
@@ -58,7 +62,8 @@ This application is not an official product of YouTube or Google and is licensed
 
 We would like to thank the following individuals for their contributions to this project:
 - [Shuckes](https://github.com/Shuckes)
-- [Nelly Angels](https://github.com/KILLXRX)
+- [Nelly Angels](https://github.com/NellyAngelz)
+- [PickleUpADoodle](https://github.com/PickleUpADoodle)
 
 ## ✨ Contributing
 All contributions, including bug reports, fixes, enhancements, and new ideas are welcome!
