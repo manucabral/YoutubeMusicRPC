@@ -14,6 +14,7 @@ A YouTube Music Rich Presence app client that shows what you're listening to, ma
 </p>
 
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/manucabral/YoutubeMusicRPC/total)
 
 ## ⏬ Download
 The lastest release is available [here](https://github.com/manucabral/YoutubeMusicRPC/releases)
