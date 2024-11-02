@@ -2,8 +2,6 @@
 
 import re
 import json
-import winreg as wr
-import os
 import subprocess as sp
 import urllib.request as req
 from .browsers import BROWSERS
@@ -25,38 +23,20 @@ def remote_debugging() -> bool:
         return False
 
 
-def find_browser(progid) -> dict:
+def find_browser(key: str, value: str) -> dict | None:
     for browser in BROWSERS:
-        if re.search(browser["name"], progid, re.IGNORECASE):
+        if re.search(browser[key], value, re.IGNORECASE):
             return browser
     return None
 
 
-def find_windows_process(process_name: str, ref: str) -> bool:
-    res = sp.check_output(
-        "WMIC PROCESS WHERE \"name='{process_name}'\" GET ExecutablePath",
-        stderr=sp.PIPE,
-    ).decode()
-    return bool(re.search(ref, res))
+def find_browser_by_process(os_string: str, target_process: str) -> dict | None:
+    for browser in BROWSERS:
+        if re.search(browser["process"][os_string], target_process, re.IGNORECASE):
+            return browser
+    return None
 
 
-def get_default_browser() -> dict:
-    progid = wr.QueryValueEx(
-        wr.OpenKey(
-            wr.HKEY_CURRENT_USER,
-            r"Software\Microsoft\Windows\Shell\Associations\UrlAssociations\http\UserChoice",
-        ),
-        "ProgId",
-    )[0]
-    if not progid:
-        raise Exception("Can't find default browser")
-    browser = find_browser(progid.split(".")[0])
-    if not browser:
-        raise Exception("Unsupported browser, sorry")
-    browser["path"] = wr.QueryValueEx(
-        wr.OpenKey(wr.HKEY_CLASSES_ROOT, progid + "\shell\open\command"), ""
-    )[0].split('"')[1]
-    return browser
 
 
 def get_browser_tabs(filter_url: str = "") -> list:
@@ -66,17 +46,17 @@ def get_browser_tabs(filter_url: str = "") -> list:
     return tabs
 
 
-def run_browser(browser: dict, profileDirec) -> None:
-    # profileDirec ="Profile 1"
-    profilePath = f'{os.environ["SYSTEMDRIVE"]}\\Users\\{os.getenv("USERNAME") + browser["profilePath"] + profileDirec}'
+def run_browser(browser_executable_path: str,
+                profile_directory:str,
+                user_directory:str
+                ) -> None:
     sp.Popen(
         [
-            browser["path"],
-            "--profile-directory=" + profileDirec,
-            "--user-data-dir" + profilePath,
-            "--app-id=cinhimbnkkaeohfgghhklpknlkffjgod",
+            browser_executable_path,
+            "--profile-directory=" + profile_directory,
+            "--user-data-dir" + user_directory,
             "--remote-debugging-port=9222",
-            "--remote-allow-origins=http://127.0.0.1:9222",
+            "--remote-allow-origins=http://127.0.0.1:9222"
         ]
     )
 

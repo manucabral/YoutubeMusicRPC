@@ -1,23 +1,17 @@
 import time
 import os
-from infi.systray import SysTrayIcon
 from .presence import Presence
 from .logger import Logger
+from .notifiers.notifier import Notifier
+from .system_tray.system_tray import SystemTray
 from .tab import Tab
-from .notification import ToastNotifier
-import win32con
-import win32gui
-import ctypes
+from .operating_systems.operating_system import OperatingSystem
 from .utils import (
     remote_debugging,
-    run_browser,
-    get_default_browser,
     get_browser_tabs,
-    find_windows_process,
 )
 
 DISCORD_STATUS_LIMIT = 15
-toast = ToastNotifier()
 
 
 class App:
@@ -35,11 +29,16 @@ class App:
         "useTimeLeft",
         "showen",
         "systray",
-        "silent"
+        "silent",
+        "__operating_system",
+        "notifier",
     )
 
     def __init__(
         self,
+        operating_system: OperatingSystem,
+        notifier: Notifier,
+        systray: SystemTray = None,
         client_id: str = "",
         version: str = None,
         title: str = None,
@@ -61,6 +60,9 @@ class App:
         self.useTimeLeft = useTimeLeft
         self.silent = False
         self.__profileName = profileName
+        self.__operating_system = operating_system
+        self.notifier = notifier
+        self.systray = systray
 
     def __handle_exception(self, exc: Exception) -> None:
         Logger.write(message=exc, level="ERROR", origin=self)
@@ -71,7 +73,7 @@ class App:
             status = self.__presence.connect()
             if not status:
                 raise Exception("Can't connect to Discord.")
-            self.__browser = get_default_browser()
+            self.__browser = self.__operating_system.get_default_browser()
             if not self.__browser:
                 raise Exception("Can't find default browser in your system.")
             if not self.__browser["chromium"]:
@@ -85,7 +87,7 @@ class App:
     def stop(self) -> None:
         if self.connected == True:
             self.connected = False
-            self.systray.shutdown()
+            self.systray.stop()
             self.__presence.close()
             Logger.write(message="stopped.", origin=self)
         
@@ -108,29 +110,6 @@ class App:
                 if tab.pause:
                     return tab
         return None
-    
-    def hideWindow(self, systray):
-        if self.showen is True:
-            self.showen = False
-            window = ctypes.windll.kernel32.GetConsoleWindow()
-            win32gui.ShowWindow(window, win32con.SW_HIDE)
-        elif self.showen is False:
-            self.showen = True
-            window = ctypes.windll.kernel32.GetConsoleWindow()
-            win32gui.ShowWindow(window, win32con.SW_SHOW)
-    
-    def update(self, systray):
-        toast = ToastNotifier()
-        try:
-            toast.show_toast(
-                "Coming soon!",
-                "This feature isn't currently avaiable yet.",
-                duration = 5,
-                icon_path = f"{os.path.join(os.getcwd(), 'icon.ico')}",
-                threaded = True,
-            )
-        except TypeError:
-            pass
 
     def on_quit_callback(self, systray):
         if self.connected == True:
@@ -141,18 +120,12 @@ class App:
     def run(self) -> None:
         last_updated_time: int = 1
         try:
-            menu_options = (("Hide/Show Console", None, self.hideWindow), ("Force Update", None, self.update))
-            self.systray = SysTrayIcon("./icon.ico", "YT Music RPC", menu_options, on_quit=self.on_quit_callback)
-            self.systray.start()
             if not self.connected:
                 raise RuntimeError("Not connected.")
-            browser_process = self.__browser["process"]["win32"]
-            browser_running = find_windows_process(
-                browser_process, self.__browser["name"]
-            )
+            browser_running = self.__operating_system.is_browser_running()
             if not remote_debugging() and browser_running:
                 Logger.write(
-                    message=f"Detected browser running ({browser_process}) without remote debugging enabled.",
+                    message=f"Detected browser running ({self.__operating_system.get_browser_process_name()}) without remote debugging enabled.",
                     level="WARNING",
                     origin=self,
                 )
@@ -163,7 +136,7 @@ class App:
                     level="WARNING",
                     origin=self,
                 )
-                run_browser(self.__browser, self.__profileName)
+                self.__operating_system.run_browser_with_debugging_server(self.__profileName)
             else:
                 Logger.write(
                     message="Remote debugging is enabled, connected successfully.",
@@ -238,15 +211,11 @@ class App:
                     silent=self.silent
                 )
                 
-                if not self.silent:
+                if not self.silent and self.notifier is not None:
                     try:
-                        toast.show_toast(
-                            "Now Playing!",
-                            f"{self.last_tab.title} by {self.last_tab.artist}",
-                            duration = 3,
-                            icon_path = f"{os.path.join(os.getcwd(), 'icon.ico')}",
-                            threaded = True,
-                        )
+                        self.notifier.notify("Now Playing!",
+                                             f"{self.last_tab.title} by {self.last_tab.artist}"
+                                            )
                     except TypeError:
                         pass
                 
